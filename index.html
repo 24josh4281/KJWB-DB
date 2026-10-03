@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김재원 말꽃연구소 인터뷰 아카이브</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --paper:#faf7ef; --raised:#ffffff;
+    --wash-pink:#f7e3e1; --wash-mint:#e3efe8; --wash-lime:#e8f0d6; --wash-peach:#fbe6d4;
+    --line:#e6e0d3; --line-strong:#cfc6b4;
+    --ink:#262a33; --muted:#5e6573;
+    --brand:#2f4a8a; --link:#3f63a3; --on-brand:#faf7ef;
+    --coral:#ee8e74; --coral-text:#a2452b; --control:#857e71; --focus:#3f63a3;
+    --serif:"Noto Serif KR","Nanum Myeongjo","AppleMyungjo",serif;
+    --sans:"Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:#141c33; --raised:#1b2748;
+      --wash-pink:#34365a; --wash-mint:#24404f; --wash-lime:#2d4046; --wash-peach:#3e3a55;
+      --line:#2c3a5e; --line-strong:#3e4e76;
+      --ink:#f3efe6; --muted:#aeb6c6;
+      --brand:#9db4e6; --link:#b7c8ee; --on-brand:#141c33;
+      --coral:#f2a48c; --coral-text:#f2a48c; --control:#6a7aa3; --focus:#b7c8ee;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:#141c33; --raised:#1b2748;
+    --wash-pink:#34365a; --wash-mint:#24404f; --wash-lime:#2d4046; --wash-peach:#3e3a55;
+    --line:#2c3a5e; --line-strong:#3e4e76;
+    --ink:#f3efe6; --muted:#aeb6c6;
+    --brand:#9db4e6; --link:#b7c8ee; --on-brand:#141c33;
+    --coral:#f2a48c; --coral-text:#f2a48c; --control:#6a7aa3; --focus:#b7c8ee;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.7; -webkit-font-smoothing:antialiased; word-break:keep-all; overflow-wrap:anywhere; }
+  h1,h2,h3 { margin:0; font-family:var(--serif); font-weight:400; color:var(--brand); letter-spacing:-0.01em; text-wrap:balance; }
+  a { color:var(--link); }
+  button, input, select { font:inherit; color:inherit; }
+  :focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 20px; }
+
+  /* 상단 */
+  header.top { border-bottom:1px solid var(--line); background:var(--paper); position:sticky; top:0; z-index:20; }
+  .top .row { display:flex; align-items:center; gap:16px; padding:12px 0; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .brand img { height:34px; display:block; }
+  .brand .logo-dark { display:none; }
+  :root[data-theme="dark"] .brand .logo-light { display:none; }
+  :root[data-theme="dark"] .brand .logo-dark { display:block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .brand .logo-light { display:none; }
+    :root:not([data-theme="light"]) .brand .logo-dark { display:block; }
+  }
+  .brand .sub { font-family:var(--serif); color:var(--brand); font-size:18px; border-left:1px solid var(--line-strong); padding-left:12px; }
+  nav.tabs { display:flex; gap:4px; margin-left:auto; flex-wrap:wrap; }
+  nav.tabs button { background:none; border:0; border-bottom:2px solid transparent; padding:8px 12px; cursor:pointer; color:var(--muted); font-weight:500; }
+  nav.tabs button[aria-selected="true"] { color:var(--brand); border-bottom-color:var(--coral); }
+  .theme-btn { border:1px solid var(--line-strong); background:var(--raised); border-radius:4px; padding:6px 10px; cursor:pointer; font-size:13px; color:var(--muted); }
+
+  main { padding:28px 0 80px; min-height:70vh; }
+  .eyebrow { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:500; letter-spacing:.08em; color:var(--link); }
+  .eyebrow::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--coral); }
+  .page-title { font-size:30px; line-height:1.3; margin:6px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 22px; max-width:70ch; }
+  .note { font-size:13px; color:var(--muted); }
+
+  /* 카드·그리드 */
+  .card { background:var(--raised); border:1px solid var(--line); border-radius:8px; padding:18px 20px; }
+  .grid { display:grid; gap:16px; }
+  .g4 { grid-template-columns:repeat(4,1fr); } .g3 { grid-template-columns:repeat(3,1fr); } .g2 { grid-template-columns:repeat(2,1fr); }
+  @media (max-width:900px){ .g4{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:1fr;} .g2{grid-template-columns:1fr;} }
+  .stat .num { font-family:var(--serif); font-size:34px; color:var(--brand); line-height:1.2; }
+  .stat .num small { font-family:var(--sans); font-size:14px; margin-left:3px; color:var(--muted); }
+  .stat .lab { font-size:13px; color:var(--muted); }
+  .wash-pink{background:var(--wash-pink);border-color:transparent;} .wash-mint{background:var(--wash-mint);border-color:transparent;}
+  .wash-lime{background:var(--wash-lime);border-color:transparent;} .wash-peach{background:var(--wash-peach);border-color:transparent;}
+  h2.sec { font-size:22px; margin:34px 0 12px; }
+  h3.sub { font-family:var(--sans); font-size:15px; font-weight:500; color:var(--ink); margin:0 0 10px; }
+
+  /* 막대 */
+  .bars { display:grid; gap:7px; }
+  .bar { display:grid; grid-template-columns:150px 1fr 70px; gap:10px; align-items:center; font-size:13px; }
+  .bar .track { background:var(--line); height:10px; border-radius:2px; overflow:hidden; }
+  .bar .fill { background:var(--brand); height:100%; }
+  .bar .fill.coral { background:var(--coral); }
+  .bar .v { text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+  @media (max-width:600px){ .bar{grid-template-columns:100px 1fr 56px;} }
+
+  /* 컨트롤 */
+  .controls { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
+  .controls input[type=search], .controls select { background:var(--raised); border:1px solid var(--line-strong); border-radius:4px; padding:9px 12px; }
+  .controls input[type=search] { flex:1 1 280px; min-width:200px; }
+  .chip { display:inline-block; border-radius:999px; padding:1px 10px; font-size:12px; background:var(--wash-peach); color:var(--ink); margin:2px 4px 2px 0; border:0; }
+  .chip.ch-책과삶{background:var(--wash-mint);} .chip.ch-김재원TV{background:var(--wash-pink);}
+  .chip.ch-CGN{background:var(--wash-lime);} .chip.ch-C채널{background:var(--wash-peach);}
+  .btn { background:var(--brand); color:var(--on-brand); border:0; border-radius:4px; padding:8px 14px; cursor:pointer; font-weight:500; }
+  .btn.ghost { background:var(--raised); color:var(--brand); border:1px solid var(--line-strong); }
+  mark { background:var(--wash-peach); color:inherit; padding:0 1px; border-radius:2px; }
+
+  /* 영상 목록 */
+  .list { display:grid; gap:10px; }
+  .item { display:block; width:100%; text-align:left; background:var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px 16px; cursor:pointer; }
+  .item:hover { border-color:var(--link); }
+  .item .t { font-family:var(--serif); color:var(--brand); font-size:17px; line-height:1.45; }
+  .item .m { font-size:12.5px; color:var(--muted); margin-top:4px; }
+  .item .s { font-size:13.5px; margin-top:6px; color:var(--ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .pager { display:flex; gap:10px; align-items:center; margin-top:14px; justify-content:center; color:var(--muted); font-size:13px; }
+
+  /* 상세 */
+  .back { background:none; border:0; color:var(--link); cursor:pointer; padding:0; margin-bottom:12px; }
+  .detail h1 { font-size:26px; line-height:1.4; }
+  .kv { display:grid; grid-template-columns:130px 1fr; gap:6px 14px; font-size:14px; }
+  .kv dt { color:var(--muted); } .kv dd { margin:0; }
+  @media (max-width:600px){ .kv{grid-template-columns:1fr;} .kv dt{margin-top:6px;} }
+  ul.clean { margin:0; padding-left:18px; } ul.clean li { margin:4px 0; }
+  .tabs2 { display:flex; gap:6px; flex-wrap:wrap; margin:22px 0 12px; border-bottom:1px solid var(--line); }
+  .tabs2 button { background:none; border:0; border-bottom:2px solid transparent; padding:8px 12px; cursor:pointer; color:var(--muted); }
+  .tabs2 button[aria-selected=true] { color:var(--brand); border-bottom-color:var(--coral); font-weight:500; }
+  .ex { border-left:3px solid var(--line-strong); padding:6px 0 6px 14px; margin:0 0 14px; }
+  .ex .head { font-size:12px; color:var(--muted); display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .ex .head a { font-variant-numeric:tabular-nums; }
+  .ex .q { font-family:var(--serif); font-size:16px; color:var(--brand); margin:4px 0; line-height:1.65; }
+  .ex .a { font-size:14px; color:var(--ink); }
+  .ex .a b { color:var(--muted); font-weight:500; }
+  .ex .ev { font-size:12.5px; color:var(--coral-text); margin-top:3px; }
+  .ex .nt { font-size:12.5px; color:var(--muted); margin-top:3px; }
+  .ex.moved { border-left-color:var(--coral); }
+  .tag { font-size:11.5px; border:1px solid var(--line-strong); border-radius:4px; padding:0 6px; color:var(--muted); }
+  .tag.hot { border-color:var(--coral); color:var(--coral-text); }
+  .quote { border-left:3px solid var(--coral); padding:2px 0 2px 14px; margin:10px 0; font-family:var(--serif); }
+  .quote small { display:block; font-family:var(--sans); color:var(--muted); font-size:12.5px; margin-top:3px; }
+  table.t { width:100%; border-collapse:collapse; font-size:13.5px; }
+  table.t th, table.t td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.t th { color:var(--muted); font-weight:500; font-size:12.5px; }
+  .empty { color:var(--muted); padding:30px; text-align:center; }
+  footer { border-top:1px solid var(--line); padding:20px 0 40px; color:var(--muted); font-size:12.5px; }
+  .ripple { position:absolute; right:-40px; top:-30px; width:260px; opacity:.55; pointer-events:none; }
+  .hero { position:relative; overflow:hidden; border-radius:8px; background:var(--wash-pink); padding:26px 28px; margin-bottom:22px; }
+  .hero > *:not(.ripple) { position:relative; }
+  @media print { header.top, .controls, nav.tabs, .pager { display:none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap row">
+    <a class="brand" href="#/" aria-label="김재원 말꽃연구소 인터뷰 아카이브 홈">
+      <img class="logo-light" src="assets/malkkot-wordmark-inline-light.png" alt="김재원 말꽃연구소" onerror="this.style.display='none'">
+      <img class="logo-dark" src="assets/malkkot-wordmark-inline-dark.png" alt="" onerror="this.style.display='none'">
+      <span class="sub">인터뷰 아카이브</span>
+    </a>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <button class="theme-btn" id="themeBtn" aria-label="화면 색 바꾸기">화면 색</button>
+  </div>
+</header>
+<main><div class="wrap" id="app"></div></main>
+<footer><div class="wrap">
+  내부 학습용 자료입니다. 원자료는 유튜브 자동 자막이며 화자 구분·반응 판정·효과 점수는 AI 분석입니다. 인용은 영상 시각 링크로 원본을 확인하세요.
+  <span id="gen"></span>
+</div></footer>
+
+<script src="data/index.js"></script>
+<script src="data/stats.js"></script>
+<script>
+"use strict";
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const V = IDX.videos, G = IDX.guests;
+const app = $("#app");
+$("#gen").textContent = " · 데이터 갱신 " + IDX.generated;
+
+/* ── 테마 */
+const themeBtn = $("#themeBtn");
+try { const t = localStorage.getItem("mk-theme"); if (t) document.documentElement.dataset.theme = t; } catch(e) {}
+themeBtn.onclick = () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("mk-theme", next); } catch(e) {}
+};
+
+/* ── 라벨 */
+const TYPE = {paraphrase:"되짚기",question:"새 질문",follow_up:"꼬리질문",self_disclosure:"자기 경험",empathy:"공감",summary:"요약",closing:"맺음",audience_proxy:"시청자 대신 묻기",humor:"유머",transition:"화제 전환",opening:"오프닝",compliment:"칭찬",challenge:"반론",guest_intro:"게스트 소개"};
+const FORM = {closed:"닫힌 질문",open:"열린 질문",leading:"유도 질문",choice:"택일",hypothetical:"가정",none:""};
+const REACT = {elaborated:"길게 답함",agreed_strongly:"강한 동의",neutral:"특별한 반응 없음",short_answer:"단답",corrected_host:"진행자를 바로잡음",laughed:"웃음",praised_host:"진행자를 칭찬",counter_question:"되물음",deflected:"답을 피함",moved:"감동"};
+const HOT = new Set(["moved","praised_host","counter_question","laughed"]);
+const HL = {guest_moved:"게스트가 감동·호응한 순간",guest_counter_question:"게스트가 되물은 순간",best_follow_up:"좋았던 꼬리질문",missed_follow_up:"놓친 꼬리질문"};
+const chClass = c => "ch-" + (c.startsWith("CGN") ? "CGN" : c.startsWith("C채널") ? "C채널" : c);
+const dfmt = d => d ? `${d.slice(0,4)}.${d.slice(4,6)}.${d.slice(6,8)}` : "";
+const tfmt = s => { s = +s || 0; const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return (h?h+":":"") + String(m).padStart(h?2:1,"0") + ":" + String(x).padStart(2,"0"); };
+const dur = s => s ? Math.round(s/60) + "분" : "";
+const link = (v, sec) => `${v.url || ("https://www.youtube.com/watch?v=" + v.id)}${sec ? "&t=" + sec + "s" : ""}`;
+const norm = s => String(s || "").toLowerCase().replace(/\s+/g, " ");
+function hi(text, terms) {
+  let h = esc(text);
+  for (const t of terms) { if (t.length < 1) continue; const re = new RegExp(esc(t).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"); h = h.replace(re, m => `<mark>${m}</mark>`); }
+  return h;
+}
+const terms = q => norm(q).split(" ").filter(Boolean);
+const matchAll = (hay, ts) => ts.every(t => hay.includes(t));
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error(src)); document.head.appendChild(s); });
+const vcache = {};
+window.__v = (id, data) => { vcache[id] = data; };
+async function loadVideo(id) { if (!vcache[id]) await loadScript(`data/v/${id}.js`); return vcache[id]; }
+async function loadEx() { if (!window.EX) await loadScript("data/ex.js"); return window.EX; }
+
+/* ── 탭 */
+const TABS = [["home","개요"],["videos","영상"],["guests","게스트"],["search","발화 검색"],["style","화법 지표"],["testimony","간증"]];
+$("#tabs").innerHTML = TABS.map(([k,l]) => `<button role="tab" data-k="${k}">${l}</button>`).join("");
+$("#tabs").onclick = e => { const b = e.target.closest("button"); if (b) location.hash = "#/" + (b.dataset.k === "home" ? "" : b.dataset.k); };
+
+/* ── 라우팅 */
+let state = { vq:"", vch:"", vdom:"", vhost:"1", vpage:0, gq:"", sq:"", stype:"", sreact:"", sch:"", spage:0, tq:"", tpage:0 };
+async function route() {
+  const parts = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
+  const k = parts[0] || "home";
+  for (const b of document.querySelectorAll("#tabs button")) b.setAttribute("aria-selected", String(b.dataset.k === (k === "video" ? "videos" : k === "guest" ? "guests" : k)));
+  window.scrollTo(0, 0);
+  if (k === "home") return viewHome();
+  if (k === "videos") return viewVideos();
+  if (k === "video") return viewVideo(parts[1], parts[2] || "ex");
+  if (k === "guests") return viewGuests();
+  if (k === "guest") return viewGuest(parts[1]);
+  if (k === "search") return viewSearch();
+  if (k === "style") return viewStyle();
+  if (k === "testimony") return viewTestimony();
+  viewHome();
+}
+addEventListener("hashchange", route);
+
+const bars = (rows, labelFn, max, cls = "") => {
+  const m = max || Math.max(1, ...rows.map(r => r.n));
+  return `<div class="bars">` + rows.map(r => `<div class="bar"><span>${esc(labelFn(r))}</span><span class="track"><span class="fill ${cls}" style="width:${(100*r.n/m).toFixed(1)}%;display:block"></span></span><span class="v">${r.n.toLocaleString()}</span></div>`).join("") + `</div>`;
+};
+
+/* ── 개요 */
+function viewHome() {
+  const S = STATS, T = S.totals;
+  const ch = {}; V.forEach(v => { ch[v.ch] = (ch[v.ch] || 0) + 1; });
+  const nTm = V.filter(v => v.tm).length;
+  app.innerHTML = `
+  <div class="hero wash-pink">
+    <svg class="ripple" viewBox="0 0 200 200" aria-hidden="true"><g fill="none" stroke="var(--brand)" stroke-width="1" opacity=".5">${[18,34,52,72,94].map(r => `<circle cx="30" cy="100" r="${r}"/>`).join("")}</g><circle cx="30" cy="100" r="5" fill="var(--coral)"/></svg>
+    <span class="eyebrow">INTERVIEW ARCHIVE</span>
+    <h1 class="page-title">말이 오간 자리를 다시 꺼내 봅니다</h1>
+    <p class="lead" style="margin-bottom:14px">책과삶·김재원TV·하늘빛향기·광야예찬의 인터뷰를 게스트, 주제, 진행자의 말, 게스트의 반응으로 찾아볼 수 있습니다.</p>
+    <div class="controls" style="margin:0"><input type="search" id="hq" placeholder="게스트 이름, 주제, 질문 속 단어로 찾기 (예: 치매, 탁구, 퇴직)" aria-label="통합 검색"><button class="btn" id="hgo">영상 찾기</button><button class="btn ghost" id="hgo2">발화 찾기</button></div>
+  </div>
+  <div class="grid g4">
+    <div class="card stat wash-mint"><div class="num">${T.videos}<small>편</small></div><div class="lab">분석한 영상 (진행자 김재원 ${T.kjw}편)</div></div>
+    <div class="card stat"><div class="num">${T.guests}<small>명</small></div><div class="lab">게스트</div></div>
+    <div class="card stat"><div class="num">${T.exchanges.toLocaleString()}<small>건</small></div><div class="lab">진행자 발화 기록</div></div>
+    <div class="card stat wash-peach"><div class="num">${nTm}<small>편</small></div><div class="lab">간증 구조 기록</div></div>
+  </div>
+  <h2 class="sec">채널별 영상</h2>
+  <div class="card">${bars(Object.entries(ch).sort((a,b)=>b[1]-a[1]).map(([k,n]) => ({k,n})), r => r.k, 0)}</div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3 class="sub">주제 분야</h3>${bars(S.domains.slice(0,10), r => r.k || "미분류")}</div>
+    <div class="card"><h3 class="sub">게스트 반응</h3>${bars(S.reacts, r => REACT[r.k] || r.k, 0, "coral")}</div>
+  </div>
+  <h2 class="sec">최근 분석한 영상</h2>
+  <div class="list">${V.slice(0,6).map(videoItem).join("")}</div>
+  <p class="note" style="margin-top:18px">진행자가 김재원이 아닌 영상은 화법 지표에서 제외했고 영상 목록에서는 '진행자 확인' 필터로 구분합니다.</p>`;
+  const go = (tab, key) => () => { state[key] = $("#hq").value; state[key === "vq" ? "vpage" : "spage"] = 0; location.hash = "#/" + tab; };
+  $("#hgo").onclick = go("videos", "vq"); $("#hgo2").onclick = go("search", "sq");
+  $("#hq").onkeydown = e => { if (e.key === "Enter") go("videos", "vq")(); };
+  bindItems();
+}
+
+function videoItem(v) {
+  const g = v.g.slice(0,3).join(", ");
+  return `<button class="item" data-v="${v.id}"><div class="t">${esc(v.t)}</div>
+    <div class="m"><span class="chip ${chClass(v.ch)}">${esc(v.ch)}</span> ${dfmt(v.d)} · ${dur(v.dur)}${g ? " · " + esc(g) : ""}${v.dom ? " · " + esc(v.dom) : ""}${v.kjw ? "" : " · <span class='tag'>진행자 다름</span>"}${v.tm ? " · <span class='tag'>간증</span>" : ""}</div>
+    <div class="s">${esc(v.top || v.sum)}</div></button>`;
+}
+function bindItems() { document.querySelectorAll(".item[data-v]").forEach(b => b.onclick = () => location.hash = "#/video/" + b.dataset.v); }
+
+/* ── 영상 목록 */
+function viewVideos() {
+  const chs = [...new Set(V.map(v => v.ch))], doms = [...new Set(V.map(v => v.dom).filter(Boolean))].sort();
+  app.innerHTML = `
+  <span class="eyebrow">VIDEOS</span><h1 class="page-title">영상 찾기</h1>
+  <p class="lead">제목·주제·요약·게스트·키워드에서 찾습니다. 공백으로 여러 단어를 쓰면 모두 포함한 영상만 보입니다.</p>
+  <div class="controls">
+    <input type="search" id="q" placeholder="예: 김경일 소통, 치매 예방, 퇴직" value="${esc(state.vq)}" aria-label="영상 검색">
+    <select id="ch" aria-label="채널"><option value="">모든 채널</option>${chs.map(c => `<option ${state.vch===c?"selected":""}>${esc(c)}</option>`).join("")}</select>
+    <select id="dom" aria-label="분야"><option value="">모든 분야</option>${doms.map(c => `<option ${state.vdom===c?"selected":""}>${esc(c)}</option>`).join("")}</select>
+    <select id="host" aria-label="진행자"><option value="1" ${state.vhost==="1"?"selected":""}>진행자 김재원</option><option value="" ${state.vhost===""?"selected":""}>진행자 무관</option></select>
+  </div>
+  <div id="res"></div>`;
+  const run = () => {
+    state.vq = $("#q").value; state.vch = $("#ch").value; state.vdom = $("#dom").value; state.vhost = $("#host").value;
+    const ts = terms(state.vq);
+    const rows = V.filter(v => (!state.vch || v.ch === state.vch) && (!state.vdom || v.dom === state.vdom) && (!state.vhost || v.kjw) &&
+      (!ts.length || matchAll(norm([v.t, v.top, v.sum, v.g.join(" "), v.kw.join(" "), v.dom].join(" ")), ts)));
+    const per = 20, pages = Math.max(1, Math.ceil(rows.length / per)); state.vpage = Math.min(state.vpage, pages - 1);
+    $("#res").innerHTML = `<p class="note">${rows.length}편</p>` + (rows.length ? `<div class="list">${rows.slice(state.vpage*per, (state.vpage+1)*per).map(videoItem).join("")}</div>
+      <div class="pager"><button class="btn ghost" id="pp" ${state.vpage?"":"disabled"}>이전</button>${state.vpage+1} / ${pages}<button class="btn ghost" id="pn" ${state.vpage<pages-1?"":"disabled"}>다음</button></div>` : `<div class="empty">조건에 맞는 영상이 없습니다.</div>`);
+    bindItems(); const pp = $("#pp"), pn = $("#pn");
+    if (pp) pp.onclick = () => { state.vpage--; run(); window.scrollTo(0,0); }; if (pn) pn.onclick = () => { state.vpage++; run(); window.scrollTo(0,0); };
+  };
+  ["q","ch","dom","host"].forEach(id => $("#"+id).addEventListener(id === "q" ? "input" : "change", () => { state.vpage = 0; run(); }));
+  run();
+}
+
+/* ── 영상 상세 */
+async function viewVideo(id, tab) {
+  const v = V.find(x => x.id === id);
+  if (!v) { app.innerHTML = `<div class="empty">영상을 찾을 수 없습니다.</div>`; return; }
+  app.innerHTML = `<div class="empty">불러오는 중…</div>`;
+  let d; try { d = await loadVideo(id); } catch (e) { app.innerHTML = `<div class="empty">상세 데이터를 불러오지 못했습니다. dashboard 폴더 전체를 그대로 열어야 합니다.</div>`; return; }
+  const tabs = [["ex","발화와 반응"],["hl","주요 장면"],["pts","게스트 이야기"],["bg","배경지식"],["st","화법"]];
+  if (d.tm) tabs.splice(2, 0, ["tm","간증 구조"]);
+  if (!tabs.some(t => t[0] === tab)) tab = "ex";
+  const guests = d.g.map(g => `<a href="#/guest/${encodeURIComponent(g[0])}">${esc(g[0])}</a>${g[1] ? " (" + esc(g[1]) + ")" : ""}`).join(", ");
+  const exs = d.ex;
+  const body = {
+    ex: () => {
+      if (!exs.length) return `<div class="empty">진행자 발화 기록이 없습니다 (${v.kjw ? "기록 없음" : "진행자가 김재원이 아닌 영상"}).</div>`;
+      return `<div class="controls"><input type="search" id="eq" placeholder="이 영상 안에서 찾기" aria-label="영상 안에서 찾기"><select id="et" aria-label="발화 유형"><option value="">모든 유형</option>${Object.entries(TYPE).map(([k,l]) => `<option value="${k}">${l}</option>`).join("")}</select><select id="er" aria-label="게스트 반응"><option value="">모든 반응</option>${Object.entries(REACT).map(([k,l]) => `<option value="${k}">${l}</option>`).join("")}</select></div><div id="exl"></div>`;
+    },
+    hl: () => !d.hl.length ? `<div class="empty">기록된 장면이 없습니다.</div> ` : Object.keys(HL).map(k => {
+      const rows = d.hl.filter(h => h[0] === k); if (!rows.length) return "";
+      return `<h3 class="sub" style="margin-top:18px">${HL[k]}</h3>` + rows.map(h => `<div class="quote">${h[2] ? "진행자: " + esc(h[2]) : ""}${h[3] ? "<br>게스트: " + esc(h[3]) : ""}<small><a href="${link(v, ts2s(h[1]))}" target="_blank" rel="noopener">${esc(h[1])}</a> · ${esc(h[4])}</small></div>`).join("");
+    }).join(""),
+    tm: () => d.tm ? `<dl class="kv">${[["신앙 전의 삶",d.tm.life_before],["시련",d.tm.hardship],["전환점",d.tm.turning_point],["이후의 삶",d.tm.after_life],["핵심 메시지",d.tm.key_message],["진행자의 대응",d.tm.host_handling]].map(([a,b]) => `<dt>${a}</dt><dd>${esc(b || "—")}</dd>`).join("")}</dl>` +
+      (d.tm.items.filter(i => i[0] === "emotion_moment").length ? `<h3 class="sub" style="margin-top:18px">감정이 움직인 순간</h3>` + d.tm.items.filter(i => i[0] === "emotion_moment").map(i => `<div class="quote">게스트: ${esc(i[2])}<br>진행자: ${esc(i[3])}<small><a href="${link(v, ts2s(i[1]))}" target="_blank" rel="noopener">${esc(i[1] || "")}</a></small></div>`).join("") : "") +
+      (d.tm.items.filter(i => i[0] === "scripture").length ? `<h3 class="sub" style="margin-top:18px">언급된 구절·찬양·기도</h3><ul class="clean">${d.tm.items.filter(i => i[0] === "scripture").map(i => `<li>${esc(i[2])}</li>`).join("")}</ul>` : "") : "",
+    pts: () => `<h3 class="sub">게스트가 한 핵심 말</h3>${d.pts.key.length ? `<ul class="clean">${d.pts.key.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "—"}<h3 class="sub" style="margin-top:18px">개인사·근황 (다시 만났을 때 안부 소재)</h3>${d.pts.fact.length ? `<ul class="clean">${d.pts.fact.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "—"}`,
+    bg: () => d.bg.length ? `<table class="t"><tr><th style="width:26%">용어·인물·책</th><th>설명</th></tr>${d.bg.map(b => `<tr><td>${esc(b[0])}</td><td>${esc(b[1])}</td></tr>`).join("")}</table>` : `<div class="empty">기록된 배경지식이 없습니다.</div>`,
+    st: () => d.st ? `<dl class="kv"><dt>어투</dt><dd>${esc(d.st[0])}</dd><dt>오프닝</dt><dd>${esc(d.st[1])}</dd><dt>맺음</dt><dd>${esc(d.st[2])}</dd><dt>진행자 발화 비중</dt><dd>${esc(d.st[3])}</dd></dl>` +
+      [["strength","좋았던 점"],["improvement","보완할 점"],["signature_phrase","자주 쓴 표현"],["filler","군말·습관어"],["backchannel","맞장구"]].map(([k,l]) => (d.sti[k] || []).length ? `<h3 class="sub" style="margin-top:18px">${l}</h3><ul class="clean">${d.sti[k].map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "").join("") : `<div class="empty">화법 기록이 없습니다.</div>`,
+  };
+  app.innerHTML = `<div class="detail"><button class="back" onclick="history.back()">← 돌아가기</button>
+    <span class="chip ${chClass(v.ch)}">${esc(v.ch)}</span> <span class="note">${dfmt(v.d)} · ${dur(v.dur)}${v.part ? " · " + esc(v.part) : ""}</span>
+    <h1>${esc(v.t)}</h1>
+    <div class="card" style="margin-top:14px"><dl class="kv"><dt>게스트</dt><dd>${guests || "—"}</dd><dt>주제</dt><dd>${esc(v.top)}${v.dom ? ` <span class="chip">${esc(v.dom)}</span>` : ""}</dd><dt>요약</dt><dd>${esc(v.sum)}</dd><dt>키워드</dt><dd>${v.kw.map(k => `<span class="chip">${esc(k)}</span>`).join("")}</dd>
+    <dt>진행자 확인</dt><dd>${v.kjw ? "김재원" : "김재원이 아님"} <span class="note">(${esc(v.conf)}) ${esc(d.host_ev)}</span></dd>${d.issues ? `<dt>자막 메모</dt><dd class="note">${esc(d.issues)}</dd>` : ""}</dl>
+    <p style="margin:12px 0 0"><a class="btn" href="${link(v)}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">영상 보기</a></p></div>
+    <div class="tabs2" role="tablist">${tabs.map(([k,l]) => `<button role="tab" aria-selected="${k===tab}" data-t="${k}">${l}</button>`).join("")}</div>
+    <div id="tabbody">${body[tab]()}</div></div>`;
+  document.querySelectorAll(".tabs2 button").forEach(b => b.onclick = () => location.hash = `#/video/${id}/${b.dataset.t}`);
+  if (tab === "ex" && exs.length) {
+    const draw = () => {
+      const ts = terms($("#eq").value), ty = $("#et").value, re = $("#er").value;
+      const rows = exs.filter(e => (!ty || e[2] === ty) && (!re || e[6] === re) && (!ts.length || matchAll(norm(e[4] + " " + e[5]), ts)));
+      $("#exl").innerHTML = `<p class="note">${rows.length} / ${exs.length}건</p>` + rows.map(e => `<div class="ex ${HOT.has(e[6]) ? "moved" : ""}"><div class="head"><a href="${link(v, e[1])}" target="_blank" rel="noopener">${tfmt(e[1])}</a><span class="tag">${TYPE[e[2]] || e[2]}</span>${e[3] && e[3] !== "none" ? `<span class="tag">${FORM[e[3]] || e[3]}</span>` : ""}${e[6] ? `<span class="tag ${HOT.has(e[6]) ? "hot" : ""}">${REACT[e[6]] || e[6]}</span>` : ""}<span>효과 ${e[8] ?? "-"}</span></div>
+        <div class="q">${hi(e[4], ts)}</div>${e[5] ? `<div class="a"><b>게스트</b> ${hi(e[5], ts)}</div>` : ""}${e[7] ? `<div class="ev">근거 · ${esc(e[7])}</div>` : ""}${e[9] ? `<div class="nt">메모 · ${esc(e[9])}</div>` : ""}</div>`).join("");
+    };
+    ["eq","et","er"].forEach(i => $("#"+i).addEventListener(i === "eq" ? "input" : "change", draw)); draw();
+  }
+}
+const ts2s = ts => { const p = String(ts || "").match(/\d+/g); if (!p) return 0; return p.map(Number).slice(0,3).reduce((a,x) => a*60 + x, 0); };
+
+/* ── 게스트 */
+function viewGuests() {
+  app.innerHTML = `<span class="eyebrow">GUESTS</span><h1 class="page-title">게스트</h1>
+  <p class="lead">같은 게스트를 다시 만날 때 이전 대화·근황·통했던 말을 한눈에 봅니다. 출연 횟수가 많은 순입니다.</p>
+  <div class="controls"><input type="search" id="gq" placeholder="이름·직함·소속" value="${esc(state.gq)}" aria-label="게스트 검색"></div><div id="gl"></div>`;
+  const draw = () => {
+    state.gq = $("#gq").value; const ts = terms(state.gq);
+    const rows = G.filter(g => !ts.length || matchAll(norm(g.n + " " + g.role + " " + g.aff), ts));
+    $("#gl").innerHTML = `<p class="note">${rows.length}명</p><div class="list">${rows.slice(0, 80).map(g => `<button class="item" data-g="${esc(g.n)}"><div class="t">${esc(g.n)} <span class="chip">${g.v.length}편</span></div><div class="m">${esc([g.role, g.aff].filter(Boolean).join(" · "))}</div><div class="m">${g.v.slice(0,2).map(i => esc(V[i].t.slice(0,50))).join(" / ")}</div></button>`).join("")}</div>${rows.length > 80 ? `<p class="note">상위 80명만 표시합니다. 이름으로 좁혀 보세요.</p>` : ""}`;
+    document.querySelectorAll(".item[data-g]").forEach(b => b.onclick = () => location.hash = "#/guest/" + encodeURIComponent(b.dataset.g));
+  };
+  $("#gq").oninput = draw; draw();
+}
+async function viewGuest(name) {
+  const g = G.find(x => x.n === name);
+  if (!g) { app.innerHTML = `<div class="empty">게스트를 찾을 수 없습니다.</div>`; return; }
+  app.innerHTML = `<div class="empty">불러오는 중…</div>`;
+  const vs = g.v.map(i => V[i]).sort((a,b) => (a.d||"").localeCompare(b.d||""));
+  const ds = await Promise.all(vs.map(v => loadVideo(v.id).catch(() => null)));
+  const sect = (title, rows) => rows.length ? `<h2 class="sec">${title}</h2>${rows.join("")}` : "";
+  const moved = [], missed = [], pts = [], facts = [];
+  vs.forEach((v, i) => { const d = ds[i]; if (!d) return;
+    d.hl.filter(h => h[0] === "guest_moved" || h[0] === "best_follow_up").slice(0,3).forEach(h => moved.push(`<div class="quote">진행자: ${esc(h[2])}${h[3] ? "<br>게스트: " + esc(h[3]) : ""}<small>${esc(v.t.slice(0,40))} · <a href="${link(v, ts2s(h[1]))}" target="_blank" rel="noopener">${esc(h[1])}</a> · ${esc(h[4])}</small></div>`));
+    d.hl.filter(h => h[0] === "missed_follow_up").slice(0,3).forEach(h => missed.push(`<div class="quote">게스트: ${esc(h[3])}<br>다시 묻는다면: ${esc(h[4])}<small>${esc(v.t.slice(0,40))} · <a href="${link(v, ts2s(h[1]))}" target="_blank" rel="noopener">${esc(h[1])}</a></small></div>`));
+    d.pts.key.slice(0,6).forEach(x => pts.push(`<li>${esc(x)} <span class="note">· ${dfmt(v.d)}</span></li>`));
+    d.pts.fact.slice(0,6).forEach(x => facts.push(`<li>${esc(x)} <span class="note">· ${dfmt(v.d)}</span></li>`));
+  });
+  app.innerHTML = `<button class="back" onclick="history.back()">← 돌아가기</button>
+  <span class="eyebrow">GUEST BRIEF</span><h1 class="page-title">${esc(g.n)}</h1>
+  <p class="lead">${esc([g.role, g.aff].filter(Boolean).join(" · "))} · 분석된 인터뷰 ${vs.length}편</p>
+  <h2 class="sec" style="margin-top:6px">지난 만남</h2>
+  <div class="list">${vs.map(videoItem).join("")}</div>
+  ${pts.length ? `<h2 class="sec">게스트가 했던 핵심 말</h2><ul class="clean">${pts.join("")}</ul>` : ""}
+  ${facts.length ? `<h2 class="sec">안부 소재 (개인사·근황)</h2><ul class="clean">${facts.join("")}</ul>` : ""}
+  ${sect("그때 잘 통한 말", moved)}
+  ${sect("그때 놓친 질문 (이번에 물어볼 만한 것)", missed)}`;
+  bindItems();
+}
+
+/* ── 발화 검색 */
+async function viewSearch() {
+  app.innerHTML = `<span class="eyebrow">UTTERANCES</span><h1 class="page-title">발화 검색</h1>
+  <p class="lead">진행자가 한 말(자막 기준 교정본)을 모든 영상에서 찾고, 게스트가 어떻게 반응했는지 함께 봅니다. 시각을 누르면 그 장면의 영상으로 이동합니다.</p>
+  <div class="controls"><input type="search" id="sq" placeholder="예: 그때 어떻게 되셨어요, 어머니, 불안" value="${esc(state.sq)}" aria-label="발화 검색">
+  <select id="st" aria-label="발화 유형"><option value="">모든 유형</option>${Object.entries(TYPE).map(([k,l]) => `<option value="${k}" ${state.stype===k?"selected":""}>${l}</option>`).join("")}</select>
+  <select id="sr" aria-label="게스트 반응"><option value="">모든 반응</option>${Object.entries(REACT).map(([k,l]) => `<option value="${k}" ${state.sreact===k?"selected":""}>${l}</option>`).join("")}</select>
+  <select id="sc" aria-label="채널"><option value="">모든 채널</option>${[...new Set(V.map(v => v.ch))].map(c => `<option ${state.sch===c?"selected":""}>${esc(c)}</option>`).join("")}</select></div><div id="sres"><div class="empty">발화 색인을 불러오는 중…</div></div>`;
+  let EX; try { EX = await loadEx(); } catch (e) { $("#sres").innerHTML = `<div class="empty">발화 색인을 불러오지 못했습니다. dashboard 폴더 전체를 그대로 열어야 합니다.</div>`; return; }
+  const run = () => {
+    state.sq = $("#sq").value; state.stype = $("#st").value; state.sreact = $("#sr").value; state.sch = $("#sc").value;
+    const ts = terms(state.sq); const out = [];
+    for (const e of EX) {
+      if (state.stype && e[2] !== state.stype) continue; if (state.sreact && e[3] !== state.sreact) continue;
+      if (state.sch && V[e[0]].ch !== state.sch) continue;
+      if (ts.length && !matchAll(norm(e[4]), ts)) continue; out.push(e);
+    }
+    const per = 25, pages = Math.max(1, Math.ceil(out.length / per)); state.spage = Math.min(state.spage, pages - 1);
+    $("#sres").innerHTML = `<p class="note">${out.length.toLocaleString()}건${!ts.length && !state.stype && !state.sreact && !state.sch ? " (전체)" : ""}</p>` +
+      out.slice(state.spage*per, (state.spage+1)*per).map(e => { const v = V[e[0]]; return `<div class="ex ${HOT.has(e[3]) ? "moved" : ""}"><div class="head"><a href="${link(v, e[1])}" target="_blank" rel="noopener">${tfmt(e[1])}</a><span class="tag">${TYPE[e[2]] || e[2]}</span>${e[7] && e[7] !== "none" ? `<span class="tag">${FORM[e[7]] || ""}</span>` : ""}${e[3] ? `<span class="tag ${HOT.has(e[3]) ? "hot" : ""}">${REACT[e[3]] || e[3]}</span>` : ""}<a href="#/video/${v.id}" style="color:var(--muted)">${esc(v.t.slice(0, 46))} · ${esc(v.g.slice(0,2).join(", "))}</a></div>
+        <div class="q">${hi(e[4], ts)}</div>${e[5] ? `<div class="a"><b>게스트</b> ${esc(e[5])}</div>` : ""}</div>`; }).join("") +
+      (out.length ? `<div class="pager"><button class="btn ghost" id="sp" ${state.spage?"":"disabled"}>이전</button>${state.spage+1} / ${pages}<button class="btn ghost" id="sn" ${state.spage<pages-1?"":"disabled"}>다음</button></div>` : `<div class="empty">조건에 맞는 발화가 없습니다.</div>`);
+    const sp = $("#sp"), sn = $("#sn"); if (sp) sp.onclick = () => { state.spage--; run(); window.scrollTo(0,0); }; if (sn) sn.onclick = () => { state.spage++; run(); window.scrollTo(0,0); };
+  };
+  ["sq","st","sr","sc"].forEach(id => $("#"+id).addEventListener(id === "sq" ? "input" : "change", () => { state.spage = 0; run(); })); run();
+}
+
+/* ── 화법 지표 */
+function viewStyle() {
+  const S = STATS; const sumN = a => a.reduce((x, r) => x + r.n, 0);
+  const nEx = sumN(S.types), nQ = sumN(S.forms);
+  const pct = (a, b) => b ? (100*a/b).toFixed(1) + "%" : "-";
+  app.innerHTML = `<span class="eyebrow">SPEECH METRICS</span><h1 class="page-title">화법 지표</h1>
+  <p class="lead">진행자가 김재원으로 확인된 ${S.totals.kjw}편, 진행자 발화 ${nEx.toLocaleString()}건 기준입니다. 효과 점수(1~5)는 분석자(AI)의 판단이라 절대값보다 유형별 차이를 보세요.</p>
+  <div class="grid g2">
+    <div class="card"><h3 class="sub">발화 유형</h3>${bars(S.types, r => `${TYPE[r.k] || r.k}  ·  효과 ${r.eff}`)}</div>
+    <div class="card"><h3 class="sub">질문 형태</h3>${bars(S.forms, r => `${FORM[r.k] || r.k}  ·  효과 ${r.eff}`, 0, "coral")}<p class="note" style="margin:12px 0 0">질문 ${nQ.toLocaleString()}건 중 닫힌 질문 ${pct((S.forms.find(f => f.k==="closed")||{n:0}).n, nQ)}, 열린 질문 ${pct((S.forms.find(f => f.k==="open")||{n:0}).n, nQ)}</p></div>
+  </div>
+  <h2 class="sec">채널별 비교</h2>
+  <div class="card"><table class="t"><tr><th>채널</th><th>편수</th><th>편당 발화</th><th>꼬리질문 비율</th><th>닫힌 질문</th><th>열린 질문</th><th>평균 효과</th></tr>
+  ${S.channels.map(c => `<tr><td>${esc(c.k)}</td><td>${c.vids}</td><td>${(c.n/c.vids).toFixed(1)}</td><td>${pct(c.fu, c.qu)}</td><td>${pct(c.cl, c.qf)}</td><td>${pct(c.op, c.qf)}</td><td>${c.eff}</td></tr>`).join("")}</table>
+  <p class="note" style="margin:10px 0 0">하늘빛향기·광야예찬은 공동 진행이 있고 게스트의 긴 독백이 많아 일반 인터뷰와 직접 비교하지 마세요.</p></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3 class="sub">게스트 반응</h3>${bars(S.reacts, r => REACT[r.k] || r.k, 0, "coral")}<p class="note" style="margin:12px 0 0">감동 판정이 적은 것은 자막에 말로 드러난 경우만 세기 때문입니다.</p></div>
+    <div class="card"><h3 class="sub">보완 후보 (${S.improve.n ? "편별 개선 서술 기준" : ""})</h3>${bars(S.improve.themes.map(t => ({k:t.k, n:t.n})), r => r.k, 0, "coral")}<p class="note" style="margin:12px 0 0">키워드로 센 근사치이며 모수는 개선점이 기록된 ${S.improve.themes[0]?.of ?? 0}편입니다.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3 class="sub">자주 나온 군말·습관어 (편 수)</h3>${bars(S.fillers, r => r.k)}</div>
+    <div class="card"><h3 class="sub">고정 멘트 (편 수)</h3>${S.phrases.length ? bars(S.phrases, r => r.k.slice(0, 22)) : "—"}</div>
+  </div>`;
+}
+
+/* ── 간증 */
+function viewTestimony() {
+  const rows0 = V.filter(v => v.tm);
+  app.innerHTML = `<span class="eyebrow">TESTIMONY</span><h1 class="page-title">간증 프로그램</h1>
+  <p class="lead">하늘빛향기·광야예찬의 간증 영상 ${rows0.length}편입니다. 영상을 열면 신앙 전의 삶, 시련, 전환점, 이후의 삶, 진행자가 고백을 받은 방식을 볼 수 있습니다. 공동 진행자가 있는 회차가 많아 화자 구분이 불확실할 수 있습니다.</p>
+  <div class="controls"><input type="search" id="tq" placeholder="게스트·주제·키워드 (예: 중독, 가족, 선교)" value="${esc(state.tq)}" aria-label="간증 검색"></div><div id="tl"></div>`;
+  const draw = () => { state.tq = $("#tq").value; const ts = terms(state.tq);
+    const rows = rows0.filter(v => !ts.length || matchAll(norm([v.t, v.top, v.sum, v.g.join(" "), v.kw.join(" ")].join(" ")), ts));
+    $("#tl").innerHTML = `<p class="note">${rows.length}편</p><div class="list">${rows.map(videoItem).join("")}</div>`; bindItems(); };
+  $("#tq").oninput = draw; draw();
+}
+route();
+</script>
+<script>/* 본문 스크립트가 data/stats.js 보다 먼저 실행되지 않도록 위 순서를 유지한다 */</script>
+</body>
+</html>
