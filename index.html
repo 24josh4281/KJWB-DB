@@ -212,15 +212,16 @@ const vcache = {};
 window.__v = (id, data) => { vcache[id] = data; };
 async function loadVideo(id) { if (!vcache[id]) await loadScript(`data/v/${id}.js`); return vcache[id]; }
 async function loadSig() { if (!window.SIG) await loadScript("data/sig.js"); return window.SIG; }
+async function loadData(name, key) { if (!window[key]) await loadScript(`data/${name}.js`); return window[key]; }
 async function loadEx() { if (!window.EX) await loadScript("data/ex.js"); return window.EX; }
 
 /* ── 탭 */
-const TABS = [["home","개요"],["videos","영상"],["guests","게스트"],["search","발화 검색"],["style","화법 지표"],["signal","잘한 순간"],["testimony","간증"],["books","도서"],["monitor","모니터링"]];
+const TABS = [["home","개요"],["videos","영상"],["guests","게스트"],["search","발화 검색"],["style","화법 지표"],["signal","잘한 순간"],["label","라벨링"],["report","리포트"],["testimony","간증"],["books","도서"],["monitor","모니터링"]];
 $("#tabs").innerHTML = TABS.map(([k,l]) => `<button role="tab" data-k="${k}">${l}</button>`).join("");
 $("#tabs").onclick = e => { const b = e.target.closest("button"); if (b) location.hash = "#/" + (b.dataset.k === "home" ? "" : b.dataset.k); };
 
 /* ── 라우팅 */
-let state = { mmode:"l", vsort:"d", bq:"", bpage:0, mq:"", vq:"", vch:"", vdom:"", vhost:"1", vpage:0, gq:"", sq:"", stype:"", sreact:"", sch:"", spage:0, tq:"", tpage:0, sgl:"2", sgt:"", sga:"words", sgk:"", sgc:"", sgu:"1", sgq:"", sgp:0 };
+let state = { mmode:"l", vsort:"d", bq:"", bpage:0, mq:"", vq:"", vch:"", vdom:"", vhost:"1", vpage:0, gq:"", sq:"", stype:"", sreact:"", sch:"", spage:0, tq:"", tpage:0, sgl:"2", sgt:"", sga:"words", sgk:"", sgc:"", sgu:"1", sgq:"", sgp:0, rk:"" };
 async function route() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
   const k = parts[0] || "home";
@@ -234,6 +235,8 @@ async function route() {
   if (k === "search") return viewSearch();
   if (k === "style") return viewStyle();
   if (k === "signal") return viewSignal();
+  if (k === "label") return viewLabel();
+  if (k === "report") return viewReport();
   if (k === "testimony") return viewTestimony();
   if (k === "books") return viewBooks();
   if (k === "monitor") return viewMonitor();
@@ -559,6 +562,36 @@ async function viewSignal() {
     const gp = $("#gp"), gn = $("#gn"); if (gp) gp.onclick = () => { state.sgp--; run(); window.scrollTo(0,0); }; if (gn) gn.onclick = () => { state.sgp++; run(); window.scrollTo(0,0); };
   };
   ["sgq","sgl","sgt","sga","sgk","sgc","sgu"].forEach(id => $("#"+id).addEventListener(id === "sgq" ? "input" : "change", () => { state.sgp = 0; run(); })); run();
+}
+
+/* ── 리포트 */
+async function viewReport() {
+  app.innerHTML = `<div class="empty">불러오는 중…</div>`;
+  let R; try { R = await loadData("reports", "RPT"); } catch (e) { app.innerHTML = `<div class="empty">리포트를 불러오지 못했습니다.</div>`; return; }
+  const cur = R.find(x => x.k === state.rk) || R[0]; state.rk = cur.k;
+  app.innerHTML = `<span class="eyebrow">REPORTS</span><h1 class="page-title">리포트</h1>
+  <div class="controls">${R.map(x => `<button class="btn ${x.k === cur.k ? "" : "ghost"}" data-k="${x.k}">${esc(x.t)}</button>`).join("")}</div>
+  <div class="card report">${cur.h}</div>`;
+  document.querySelectorAll(".controls button[data-k]").forEach(b => b.onclick = () => { state.rk = b.dataset.k; viewReport(); });
+}
+
+/* ── 라벨링 (이해받음 신호 정확도 검증) */
+async function viewLabel() {
+  app.innerHTML = `<div class="empty">불러오는 중…</div>`;
+  let L; try { L = await loadData("label", "LBL"); } catch (e) { app.innerHTML = `<div class="empty">라벨링 표를 불러오지 못했습니다.</div>`; return; }
+  const KEY = "signal_labels_v1"; let S = {};
+  try { S = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+  app.innerHTML = `<span class="eyebrow">LABELING</span><h1 class="page-title">이해받음 신호 라벨링 (${L.length}건)</h1>
+  <p class="lead">각 장면에서 게스트의 반응이 <b>진행자가 한 말이 정확했거나, 자기 마음을 알아줬다고 느낀 표현</b>이면 O, 진행자 말을 받아 속마음이나 새 이야기를 꺼낸 경우도 O입니다. 단순 맞장구·사실 답변·정정·일반 인사는 X, 판단이 어려우면 모르겠다를 누릅니다. AI 판정은 보여 드리지 않습니다. 누른 값은 이 기기의 브라우저에 저장됩니다.</p>
+  <div class="controls" style="position:sticky;top:0;z-index:2"><span id="lcnt" class="note" style="align-self:center"></span><button class="btn" id="lcopy">결과 복사</button></div>
+  ${L.map((it, n) => `<div class="ex" data-id="${esc(it.id)}"><div class="head"><span>${n + 1} / ${L.length}</span><a href="${esc(it.link)}" target="_blank" rel="noopener">〈${esc(it.title.slice(0, 40))}〉 ${tfmt(it.t)}</a></div>
+    <div class="q"><b>진행자</b> ${esc(it.u)}</div><div class="a"><b>게스트(요약)</b> ${esc(it.g)}</div><div class="a"><b>게스트가 한 말</b> ${esc(it.e)}</div>
+    <div class="controls" style="margin:10px 0 0">${[["O","O 이해받았다는 반응"],["X","X 아니다"],["?","모르겠다"]].map(([v, l]) => `<button class="btn ghost lb" data-v="${v}">${l}</button>`).join("")}</div></div>`).join("")}
+  <textarea id="lout" readonly style="width:100%;height:110px;margin-top:14px;font:12px monospace" placeholder="'결과 복사'를 누르면 JSON이 나옵니다. 대화창에 붙여 넣어 주세요."></textarea>`;
+  const paint = () => { let n = 0; document.querySelectorAll(".ex[data-id]").forEach(c => { const v = S[c.dataset.id]; if (v) n++; c.querySelectorAll(".lb").forEach(b => b.classList.toggle("ghost", b.dataset.v !== v)); }); $("#lcnt").textContent = n + " / " + L.length; };
+  document.querySelectorAll(".ex[data-id]").forEach(c => c.addEventListener("click", e => { const b = e.target.closest(".lb"); if (!b) return; S[c.dataset.id] = b.dataset.v; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (x) {} paint(); }));
+  $("#lcopy").onclick = () => { const d = new Date().toISOString().slice(0, 10); const t = JSON.stringify(Object.keys(S).filter(k => S[k] === "O" || S[k] === "X").map(k => ({id: k, label: S[k], labeled_at: d}))); const o = $("#lout"); o.value = t; o.select(); try { navigator.clipboard.writeText(t); } catch (e) {} };
+  paint();
 }
 
 /* ── 모니터링 */
