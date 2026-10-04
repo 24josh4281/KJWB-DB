@@ -211,15 +211,16 @@ const loadScript = src => new Promise((res, rej) => { const s = document.createE
 const vcache = {};
 window.__v = (id, data) => { vcache[id] = data; };
 async function loadVideo(id) { if (!vcache[id]) await loadScript(`data/v/${id}.js`); return vcache[id]; }
+async function loadSig() { if (!window.SIG) await loadScript("data/sig.js"); return window.SIG; }
 async function loadEx() { if (!window.EX) await loadScript("data/ex.js"); return window.EX; }
 
 /* ── 탭 */
-const TABS = [["home","개요"],["videos","영상"],["guests","게스트"],["search","발화 검색"],["style","화법 지표"],["testimony","간증"],["books","도서"],["monitor","모니터링"]];
+const TABS = [["home","개요"],["videos","영상"],["guests","게스트"],["search","발화 검색"],["style","화법 지표"],["signal","잘한 순간"],["testimony","간증"],["books","도서"],["monitor","모니터링"]];
 $("#tabs").innerHTML = TABS.map(([k,l]) => `<button role="tab" data-k="${k}">${l}</button>`).join("");
 $("#tabs").onclick = e => { const b = e.target.closest("button"); if (b) location.hash = "#/" + (b.dataset.k === "home" ? "" : b.dataset.k); };
 
 /* ── 라우팅 */
-let state = { mmode:"l", vsort:"d", bq:"", bpage:0, mq:"", vq:"", vch:"", vdom:"", vhost:"1", vpage:0, gq:"", sq:"", stype:"", sreact:"", sch:"", spage:0, tq:"", tpage:0 };
+let state = { mmode:"l", vsort:"d", bq:"", bpage:0, mq:"", vq:"", vch:"", vdom:"", vhost:"1", vpage:0, gq:"", sq:"", stype:"", sreact:"", sch:"", spage:0, tq:"", tpage:0, sgl:"2", sgt:"", sga:"words", sgk:"", sgc:"", sgu:"1", sgq:"", sgp:0 };
 async function route() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
   const k = parts[0] || "home";
@@ -232,6 +233,7 @@ async function route() {
   if (k === "guest") return viewGuest(parts[1]);
   if (k === "search") return viewSearch();
   if (k === "style") return viewStyle();
+  if (k === "signal") return viewSignal();
   if (k === "testimony") return viewTestimony();
   if (k === "books") return viewBooks();
   if (k === "monitor") return viewMonitor();
@@ -324,8 +326,10 @@ async function viewVideo(id, tab) {
   if (!v) { app.innerHTML = `<div class="empty">영상을 찾을 수 없습니다.</div>`; return; }
   app.innerHTML = `<div class="empty">불러오는 중…</div>`;
   let d; try { d = await loadVideo(id); } catch (e) { app.innerHTML = `<div class="empty">상세 데이터를 불러오지 못했습니다. dashboard 폴더 전체를 그대로 열어야 합니다.</div>`; return; }
+  let sg = []; try { const SG = await loadSig(); const vi = V.findIndex(x => x.id === id); sg = SG.rows.filter(r => r[0] === vi); } catch (e) {}
   const tabs = [["ex","발화와 반응"],["hl","주요 장면"],["pts","게스트 이야기"],["bg","배경지식"],["st","화법"],["cm",`댓글${v.cc ? " " + num(v.cc) : ""}`]];
   if (d.tm) tabs.splice(2, 0, ["tm","간증 구조"]);
+  if (sg.length) tabs.splice(2, 0, ["sg", `잘한 순간 ${sg.length}`]);
   if (!tabs.some(t => t[0] === tab)) tab = "ex";
   const guests = d.g.map(g => `<a href="#/guest/${encodeURIComponent(g[0])}">${esc(g[0])}</a>${g[1] ? " (" + esc(g[1]) + ")" : ""}`).join(", ");
   const exs = d.ex;
@@ -334,6 +338,7 @@ async function viewVideo(id, tab) {
       if (!exs.length) return `<div class="empty">진행자 발화 기록이 없습니다 (${v.kjw ? "기록 없음" : "진행자가 김재원이 아닌 영상"}).</div>`;
       return `<div class="controls"><input type="search" id="eq" placeholder="이 영상 안에서 찾기" aria-label="영상 안에서 찾기"><select id="et" aria-label="발화 유형"><option value="">모든 유형</option>${Object.entries(TYPE).map(([k,l]) => `<option value="${k}">${l}</option>`).join("")}</select><select id="er" aria-label="게스트 반응"><option value="">모든 반응</option>${Object.entries(REACT).map(([k,l]) => `<option value="${k}">${l}</option>`).join("")}</select></div><div id="exl"></div>`;
     },
+    sg: () => `<p class="note">게스트의 반응이 진행자의 말에 대한 인정·공감·확장으로 읽힌 장면입니다(AI 판정, 정확도 검증 전). 시각을 누르면 그 장면으로 갑니다.</p>` + sg.map(r => sigCard(r, v)).join(""),
     hl: () => !d.hl.length ? `<div class="empty">기록된 장면이 없습니다.</div> ` : Object.keys(HL).map(k => {
       const rows = d.hl.filter(h => h[0] === k); if (!rows.length) return "";
       return `<h3 class="sub" style="margin-top:18px">${HL[k]}</h3>` + rows.map(h => `<div class="quote">${h[2] ? "진행자: " + esc(h[2]) : ""}${h[3] ? "<br>게스트: " + esc(h[3]) : ""}<small><a href="${link(v, ts2s(h[1]))}" target="_blank" rel="noopener">${esc(h[1])}</a> · ${esc(h[4])}</small></div>`).join("");
@@ -499,6 +504,61 @@ function viewBooks() {
       <div style="margin-top:6px">${b.v.map(i => `<a href="#/video/${V[i].id}" style="display:block;font-size:13.5px">${esc(V[i].t.slice(0, 70))} <span class="note">${dfmt(V[i].d)}${V[i].vw != null ? " · 조회 " + num(V[i].vw) : ""}</span></a>`).join("")}${b.n > b.v.length ? `<span class="note">외 ${b.n - b.v.length}편</span>` : ""}</div></div>`).join("") + `</div>`;
   };
   $("#bq").oninput = draw; draw();
+}
+
+/* ── 잘한 순간 (이해받음 신호) */
+const SIGT = {accuracy:"정확성 인정", emotion:"마음을 알아줌", gratitude:"감사", praise:"칭찬", expand:"확장"};
+const SIGO = ["emotion","accuracy","gratitude","praise","expand"]; /* 목록 정렬: 판정이 확실한 것 먼저, 이해받음에 가까운 종류 먼저 */
+const SIGA = {words:"진행자의 말", question:"질문", manner:"진행 방식", other:"기타"};
+const TECH = {reflect:"되짚기", summarize:"요약·정리", name_emotion:"감정 명명", metaphor:"비유", share_self:"자기 경험 공유", specific_question:"구체적 질문", open_question:"열린 질문", viewer_proxy:"시청자 대신 묻기", affirm:"인정·감사·칭찬", other:"기타"};
+function sigCard(r, v) {
+  v = v || V[r[0]];
+  return `<div class="ex ${r[2] >= 3 ? "moved" : ""}"><div class="head"><a href="${link(v, r[1])}" target="_blank" rel="noopener">${tfmt(r[1])}</a><span class="tag ${r[2] >= 3 ? "hot" : ""}">${SIGT[r[3]] || r[3]} · level ${r[2]}</span>${r[4] ? `<span class="tag">${SIGA[r[4]] || r[4]}</span>` : ""}${r[6] ? `<span class="tag">${TECH[r[6]] || r[6]}${r[7] ? " · 표현 인용" : ""}</span>` : ""}${r[5] ? `<span class="tag">판정 애매</span>` : ""}${r[8] ? `<span class="tag">공동 진행</span>` : ""}<a href="#/video/${v.id}" style="color:var(--muted)">${esc(v.t.slice(0, 46))} · ${esc(v.g.slice(0, 2).join(", "))}</a></div>
+    <div class="q">${esc(r[9])}</div><div class="a"><b>게스트</b> ${esc(r[10])}</div>${r[11] ? `<div class="ev">근거 · ${esc(r[11])}</div>` : ""}</div>`;
+}
+async function viewSignal() {
+  app.innerHTML = `<div class="empty">불러오는 중…</div>`;
+  let SG; try { SG = await loadSig(); } catch (e) { app.innerHTML = `<div class="empty">데이터를 불러오지 못했습니다. dashboard 폴더 전체를 그대로 열어야 합니다.</div>`; return; }
+  const m = SG.sum, G = m.gold, pc = x => x == null ? "-" : x + "%";
+  const mainCh = m.channels.filter(c => !c.co_host);
+  app.innerHTML = `<span class="eyebrow">UNDERSTOOD SIGNALS</span><h1 class="page-title">게스트가 이해받았다고 말한 순간</h1>
+  <p class="lead">진행자 멘트 뒤에 게스트가 "정확합니다", "제 마음을 알아주시네요"처럼 이해받은 반응을 말로 드러낸 장면입니다. 자막에 말로 나온 것만 세고, 판정은 AI가 했습니다. ${G.n ? `사용자 라벨 ${G.n}건과 비교한 일치율은 ${Math.round(G.rate*100)}%입니다.` : `<b>아직 사람이 확인하지 않은 값(정확도 검증 전)</b>이라 개별 장면은 영상에서 직접 확인하세요.`}</p>
+  <div class="grid g4">
+    <div class="card stat wash-mint"><div class="num">${m.core}<small>건</small></div><div class="lab">핵심 신호 (진행자의 말에 대한 반응)</div></div>
+    <div class="card stat"><div class="num">${(100*m.core/m.exchanges).toFixed(2)}</div><div class="lab">발화 100건당 핵심 신호</div></div>
+    <div class="card stat"><div class="num">${m.core_sure}<small>건</small></div><div class="lab">그중 판정이 확실한 것</div></div>
+    <div class="card stat wash-peach"><div class="num">${m.levels["3"] || 0}<small>건</small></div><div class="lab">마음을 알아줬다는 직접 표현 (level 3)</div></div>
+  </div>
+  <p class="note" style="margin-top:10px">후보 규칙이 찾지 못한 신호가 있습니다. 무작위 ${m.miss.checked}건 점검에서 ${m.miss.found}건이 더 나와, 후보 밖에 약 ${m.miss.est_total}건(${m.miss.range[0]}~${m.miss.range[1]})이 있을 수 있고 후보 규칙은 전체의 약 ${Math.round(100*m.miss.recall_est)}%를 잡았다고 추정합니다. 총량은 대략으로만 보세요.</p>
+  <h2 class="sec">어떤 멘트 뒤에 나왔나</h2>
+  <div class="card" style="overflow-x:auto"><table class="t"><tr><th>멘트 기법</th><th>무작위 기준선(건)</th><th>핵심 신호(건)</th><th>기준선 대비</th><th>추정 성공률</th></tr>
+  ${m.techniques.map(t => `<tr ${t.thin ? 'style="opacity:.55"' : ""}><td>${esc(t.name)}</td><td>${t.base}</td><td>${t.core}</td><td>${t.lift ?? "-"}배</td><td>${pc(t.rate)}${t.thin ? ' <span class="note">표본 부족</span>' : ""}</td></tr>`).join("")}</table>
+  <p class="note" style="margin:10px 0 0">기준선 ${m.base_n}건은 진행자 발화 전체에서 무작위로 고른 표본입니다. 질문은 답변이 돌아오는 구조라 이해받음 표현이 나오기 어려워 성공률이 낮게 나옵니다. 질문의 성과는 '화법 지표'의 꼬리질문으로 보세요. 게스트 표현을 그대로 인용한 멘트는 기준선 ${m.quote.base_yes_pct}%, 신호 장면 ${m.quote.sig_yes_pct}%입니다.</p></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3 class="sub">채널별 발화 100건당 핵심 신호</h3>${bars(mainCh.map(c => ({k:c.channel, n:c.per100})), r => r.k, 0, "coral")}<p class="note" style="margin:10px 0 0">하늘빛향기는 공동 진행이라 제외했습니다.</p></div>
+    <div class="card"><h3 class="sub">월별 (발화 300건 이상인 달)</h3>${bars(m.months.filter(x => x.exchanges >= 300).map(x => ({k:x.ym.slice(0,4) + "." + x.ym.slice(4), n:x.per100})), r => r.k)}</div>
+  </div>
+  <h2 class="sec">장면 찾기</h2>
+  <div class="controls"><input type="search" id="sgq" placeholder="진행자 멘트·게스트 말에서 찾기" value="${esc(state.sgq)}" aria-label="장면 검색">
+  <select id="sgl" aria-label="강도"><option value="2" ${state.sgl==="2"?"selected":""}>level 2 이상</option><option value="3" ${state.sgl==="3"?"selected":""}>level 3 이상 (마음을 알아줌·확장)</option><option value="4" ${state.sgl==="4"?"selected":""}>level 4 (확장)만</option></select>
+  <select id="sgt" aria-label="신호 종류"><option value="">모든 종류</option>${Object.entries(SIGT).map(([k,l]) => `<option value="${k}" ${state.sgt===k?"selected":""}>${l}</option>`).join("")}</select>
+  <select id="sga" aria-label="반응 대상"><option value="words" ${state.sga==="words"?"selected":""}>진행자의 말에 대한 반응</option><option value="" ${state.sga===""?"selected":""}>모든 대상 (질문·진행 방식 칭찬 포함)</option></select>
+  <select id="sgk" aria-label="멘트 기법"><option value="">모든 기법</option>${Object.entries(TECH).map(([k,l]) => `<option value="${k}" ${state.sgk===k?"selected":""}>${l}</option>`).join("")}</select>
+  <select id="sgc" aria-label="채널"><option value="">모든 채널</option>${[...new Set(V.map(v => v.ch))].map(c => `<option ${state.sgc===c?"selected":""}>${esc(c)}</option>`).join("")}</select>
+  <select id="sgu" aria-label="판정"><option value="1" ${state.sgu==="1"?"selected":""}>판정 애매한 것 포함</option><option value="0" ${state.sgu==="0"?"selected":""}>확실한 것만</option></select></div><div id="sgres"></div>
+  <p class="note" style="margin-top:18px">한계: 어조·표정·침묵은 자막에 없어 말로 드러난 것만 셉니다. 판정은 AI이고 단순 맞장구(level 1)는 제외했습니다. 월별·기법별 수치는 표본이 작아 흔들립니다.</p>`;
+  const run = () => {
+    state.sgq = $("#sgq").value; state.sgl = $("#sgl").value; state.sgt = $("#sgt").value; state.sga = $("#sga").value; state.sgk = $("#sgk").value; state.sgc = $("#sgc").value; state.sgu = $("#sgu").value;
+    const ts = terms(state.sgq), lv = +state.sgl;
+    const out = SG.rows.filter(r => r[2] >= lv && (!state.sgt || r[3] === state.sgt) && (!state.sga || r[4] === state.sga) && (!state.sgk || r[6] === state.sgk) &&
+      (!state.sgc || V[r[0]].ch === state.sgc) && (state.sgu === "1" || !r[5]) && (!ts.length || matchAll(norm(r[9] + " " + r[10]), ts)))
+      .sort((a, b) => a[5] - b[5] || SIGO.indexOf(a[3]) - SIGO.indexOf(b[3]) || (V[b[0]].d || "").localeCompare(V[a[0]].d || "") || a[1] - b[1]);
+    const per = 20, pages = Math.max(1, Math.ceil(out.length / per)); state.sgp = Math.min(state.sgp, pages - 1);
+    $("#sgres").innerHTML = `<p class="note">${out.length}건</p>` + out.slice(state.sgp*per, (state.sgp+1)*per).map(r => sigCard(r)).join("") +
+      (out.length ? `<div class="pager"><button class="btn ghost" id="gp" ${state.sgp?"":"disabled"}>이전</button>${state.sgp+1} / ${pages}<button class="btn ghost" id="gn" ${state.sgp<pages-1?"":"disabled"}>다음</button></div>` : `<div class="empty">조건에 맞는 장면이 없습니다.</div>`);
+    const gp = $("#gp"), gn = $("#gn"); if (gp) gp.onclick = () => { state.sgp--; run(); window.scrollTo(0,0); }; if (gn) gn.onclick = () => { state.sgp++; run(); window.scrollTo(0,0); };
+  };
+  ["sgq","sgl","sgt","sga","sgk","sgc","sgu"].forEach(id => $("#"+id).addEventListener(id === "sgq" ? "input" : "change", () => { state.sgp = 0; run(); })); run();
 }
 
 /* ── 모니터링 */
