@@ -399,7 +399,7 @@ async function viewVideo(id, tab, keepPos) {
     <h1>${esc(v.t)}</h1>
     <div class="card" style="margin-top:14px"><dl class="kv"><dt>게스트</dt><dd>${guests || "—"}</dd><dt>주제</dt><dd>${esc(v.top)}${v.dom ? ` <span class="chip">${esc(v.dom)}</span>` : ""}</dd>
     <dt>요약</dt><dd class="sum">${sentences(v.sum)}</dd>
-    ${d.pts.key.length ? `<dt>핵심 말</dt><dd class="sum"><ul class="sumlist">${d.pts.key.slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("")}</ul>${d.pts.key.length > 3 ? `<a href="#/video/${id}/pts" class="note">게스트 이야기 전체 보기 (${d.pts.key.length}개)</a>` : ""}</dd>` : ""}
+    ${d.pts.key.length ? `<dt>핵심 말</dt><dd class="sum"><ul class="sumlist">${d.pts.key.slice(0, 7).map(x => `<li>${esc(eum(x))}</li>`).join("")}</ul>${d.pts.key.length > 7 ? `<a href="#/video/${id}/pts" class="note">게스트 이야기 전체 보기 (${d.pts.key.length}개)</a>` : ""}</dd>` : ""}
     <dt>이 영상에서</dt><dd><span class="chip">발화 ${exs.length}건</span>${d.hl.length ? `<span class="chip">주요 장면 ${d.hl.length}</span>` : ""}${sg.length ? `<span class="chip" style="background:var(--wash-mint)">잘한 순간 ${sg.length}</span>` : ""}${d.bg.length ? `<span class="chip">배경지식 ${d.bg.length}</span>` : ""}${d.tm ? `<span class="chip">간증 구조</span>` : ""}</dd>
     <dt>키워드</dt><dd>${v.kw.map(k => `<span class="chip">${esc(k)}</span>`).join("")}</dd>
     ${d.bk && d.bk.length ? `<dt>영상 속 책</dt><dd>${d.bk.map(b => `<span class="chip">${esc(b[0])}</span><span class="note">${esc(ROLE[b[2]] || "")}${b[1] ? " · " + esc(b[1]) : ""}</span> `).join("<br>")}</dd>` : ""}
@@ -420,7 +420,21 @@ async function viewVideo(id, tab, keepPos) {
     ["eq","et","er"].forEach(i => $("#"+i).addEventListener(i === "eq" ? "input" : "change", draw)); draw();
   }
 }
-const sentences = t => { const parts = String(t || "").split(/(?<=[다요음임]\.)\s+/).filter(Boolean); return parts.length > 1 ? `<ul class="sumlist">${parts.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : esc(t); };
+/* '-한다/-했다' 문장을 '-함/-했음' 개조식으로 바꾼다 (표시할 때만, 원문 데이터는 그대로) */
+const eum = t => {
+  const m = String(t || "").trim().match(/^([\s\S]*?)([가-힣])(는다|다)([.!?]?)(["”’)]*)$/);
+  if (!m) return t;
+  let [, head, last, end, punct, close] = m;
+  const code = last.charCodeAt(0) - 0xAC00, jong = code % 28, base = last.charCodeAt(0) - jong;
+  let out;
+  if (end === "는다") out = head + last + "음";                           // 먹는다 → 먹음
+  else if (jong === 0) out = head + String.fromCharCode(base + 16);        // 이다 → 임, 하다 → 함
+  else if (jong === 4) out = head + String.fromCharCode(base + 16);        // 한다 → 함, 본다 → 봄
+  else if (jong === 8) out = head + String.fromCharCode(base + 10);        // 길다 → 긺
+  else out = head + last + "음";                                           // 했다 → 했음, 있다 → 있음
+  return out + (punct || ".") + close;
+};
+const sentences = t => { const parts = String(t || "").split(/(?<=[다요음임]\.)\s+/).filter(Boolean); return parts.length > 1 ? `<ul class="sumlist">${parts.map(x => `<li>${esc(eum(x))}</li>`).join("")}</ul>` : esc(eum(t)); };
 function histNote(h) {
   const days = [...new Set((h || []).map(x => x[0].slice(0,10)))];
   if (days.length < 2) return " · 변화는 다음 갱신부터 표시";
