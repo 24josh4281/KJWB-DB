@@ -150,15 +150,22 @@
   table.t { width:100%; border-collapse:collapse; font-size:13.5px; }
   table.t th, table.t td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
   table.t th { color:var(--muted); font-weight:500; font-size:12.5px; }
-  table.t td:not(:first-child), table.t th:not(:first-child) { white-space:nowrap; }
-  table.t td:not(:first-child) { font-variant-numeric:tabular-nums; }
-  @media (max-width:760px){
-    .card > table.t, .card > div > table.t { font-size:13px; }
-    table.t th, table.t td { padding:7px 8px; }
-    table.t td:first-child { min-width:170px; }
-    .scrollhint { display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
-  }
+  table.t.num td:not(:first-child), table.t.num th:not(:first-child) { white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .tw { overflow-x:auto; -webkit-overflow-scrolling:touch; }
   .scrollhint { display:none; }
+  @media (max-width:760px){
+    table.t { font-size:13px; }
+    table.t th, table.t td { padding:7px 8px; }
+    table.t.num td:first-child { min-width:170px; }
+    .scrollhint { display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
+    /* 글 표는 행마다 카드처럼 세로로 쌓는다 */
+    table.t.stack, table.t.stack tbody, table.t.stack tr, table.t.stack td { display:block; width:100%; box-sizing:border-box; }
+    table.t.stack tr:first-child { display:none; }
+    table.t.stack tr { border-bottom:1px solid var(--line); padding:8px 0; }
+    table.t.stack td { border:0; padding:2px 0; }
+    table.t.stack td:first-child { font-family:var(--serif); color:var(--brand); font-size:15px; }
+    #tabbody { min-height:80vh; } /* 짧은 탭도 탭 줄을 화면 위로 올릴 수 있게 */
+  }
   .empty { color:var(--muted); padding:30px; text-align:center; }
   footer { border-top:1px solid var(--line); padding:20px 0 40px; color:var(--muted); font-size:12.5px; }
   .ripple { position:absolute; right:-40px; top:-30px; width:260px; opacity:.55; pointer-events:none; }
@@ -375,7 +382,7 @@ async function viewVideo(id, tab, keepPos) {
       (d.tm.items.filter(i => i[0] === "emotion_moment").length ? `<h3 class="sub" style="margin-top:18px">감정이 움직인 순간</h3>` + d.tm.items.filter(i => i[0] === "emotion_moment").map(i => `<div class="quote">게스트: ${esc(i[2])}<br>진행자: ${esc(i[3])}<small><a href="${link(v, ts2s(i[1]))}" target="_blank" rel="noopener">${esc(i[1] || "")}</a></small></div>`).join("") : "") +
       (d.tm.items.filter(i => i[0] === "scripture").length ? `<h3 class="sub" style="margin-top:18px">언급된 구절·찬양·기도</h3><ul class="clean">${d.tm.items.filter(i => i[0] === "scripture").map(i => `<li>${esc(i[2])}</li>`).join("")}</ul>` : "") : "",
     pts: () => `<h3 class="sub">게스트가 한 핵심 말</h3>${d.pts.key.length ? `<ul class="clean">${d.pts.key.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "—"}<h3 class="sub" style="margin-top:18px">개인사·근황 (다시 만났을 때 안부 소재)</h3>${d.pts.fact.length ? `<ul class="clean">${d.pts.fact.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "—"}`,
-    bg: () => d.bg.length ? `<table class="t"><tr><th style="width:26%">용어·인물·책</th><th>설명</th></tr>${d.bg.map(b => `<tr><td>${esc(b[0])}</td><td>${esc(b[1])}</td></tr>`).join("")}</table>` : `<div class="empty">기록된 배경지식이 없습니다.</div>`,
+    bg: () => d.bg.length ? `<table class="t stack"><tr><th style="width:26%">용어·인물·책</th><th>설명</th></tr>${d.bg.map(b => `<tr><td>${esc(b[0])}</td><td>${esc(b[1])}</td></tr>`).join("")}</table>` : `<div class="empty">기록된 배경지식이 없습니다.</div>`,
     cm: () => {
       if (!d.cm.length) return `<div class="empty">수집된 댓글이 없습니다.</div>`;
       const one = c => `<div class="quote">${esc(c[0])}<small>좋아요 ${c[1].toLocaleString()} · 답글 ${c[6]}${c[7] ? "개 이상" : "개"}${c[2] ? " · " + dts(c[2]) : ""}${c[3] ? " · 고정" : ""}${c[4] ? " · 채널 하트" : ""}${c[5] ? " · 채널 운영자" : ""}</small></div>`;
@@ -384,15 +391,20 @@ async function viewVideo(id, tab, keepPos) {
         <h3 class="sub" style="margin-top:22px">답글 많은 댓글 ${d.cr.length}개</h3>${d.cr.length ? d.cr.map(one).join("") : `<div class="empty">답글이 달린 댓글이 없습니다.</div>`}`;
     },
     st: () => d.st ? `<dl class="kv"><dt>어투</dt><dd>${esc(d.st[0])}</dd><dt>오프닝</dt><dd>${esc(d.st[1])}</dd><dt>맺음</dt><dd>${esc(d.st[2])}</dd><dt>진행자 발화 비중</dt><dd>${esc(d.st[3])}</dd></dl>` +
-      [["strength","좋았던 점"],["improvement","보완할 점"],["signature_phrase","자주 쓴 표현"],["filler","군말·습관어"],["backchannel","맞장구"]].map(([k,l]) => (d.sti[k] || []).length ? `<h3 class="sub" style="margin-top:18px">${l}</h3><ul class="clean">${d.sti[k].map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "").join("") : `<div class="empty">화법 기록이 없습니다.</div>`,
+      [["strength","좋았던 점"],["improvement","보완할 점"],["signature_phrase","자주 쓴 표현"],["filler","군말·습관어"],["backchannel","맞장구"]].map(([k,l]) => (d.sti[k] || []).length ? `<h3 class="sub" style="margin-top:18px">${l}</h3><ul class="clean">${d.sti[k].map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "").join("")
+      + `<p class="note" style="margin-top:22px">진행자 확인: ${v.kjw ? "김재원" : "김재원이 아님"} (${esc(v.conf)}) ${esc(d.host_ev)}${d.issues ? `<br>자막 메모: ${esc(d.issues)}` : ""}</p>` : `<div class="empty">화법 기록이 없습니다.</div>`,
   };
   app.innerHTML = `<div class="detail"><button class="back" onclick="history.back()">← 돌아가기</button>
     <span class="chip ${chClass(v.ch)}">${esc(v.ch)}</span> <span class="note">${dfmt(v.d)} · ${dur(v.dur)}${v.part ? " · " + esc(v.part) : ""}</span>
     <h1>${esc(v.t)}</h1>
-    <div class="card" style="margin-top:14px"><dl class="kv"><dt>게스트</dt><dd>${guests || "—"}</dd><dt>주제</dt><dd>${esc(v.top)}${v.dom ? ` <span class="chip">${esc(v.dom)}</span>` : ""}</dd><dt>요약</dt><dd class="sum">${sentences(v.sum)}</dd><dt>키워드</dt><dd>${v.kw.map(k => `<span class="chip">${esc(k)}</span>`).join("")}</dd>
-    ${v.vw != null ? `<dt>조회·반응</dt><dd>조회 ${v.vw.toLocaleString()} · 좋아요 ${(v.lk ?? 0).toLocaleString()} (${rate(v.lk, v.vw)}) · 댓글 ${(v.cc ?? 0).toLocaleString()} <span class="note">${esc(v.sa)} 기준${histNote(d.hist)}</span></dd>` : ""}
+    <div class="card" style="margin-top:14px"><dl class="kv"><dt>게스트</dt><dd>${guests || "—"}</dd><dt>주제</dt><dd>${esc(v.top)}${v.dom ? ` <span class="chip">${esc(v.dom)}</span>` : ""}</dd>
+    <dt>요약</dt><dd class="sum">${sentences(v.sum)}</dd>
+    ${d.pts.key.length ? `<dt>핵심 말</dt><dd class="sum"><ul class="sumlist">${d.pts.key.slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("")}</ul>${d.pts.key.length > 3 ? `<a href="#/video/${id}/pts" class="note">게스트 이야기 전체 보기 (${d.pts.key.length}개)</a>` : ""}</dd>` : ""}
+    <dt>이 영상에서</dt><dd><span class="chip">발화 ${exs.length}건</span>${d.hl.length ? `<span class="chip">주요 장면 ${d.hl.length}</span>` : ""}${sg.length ? `<span class="chip" style="background:var(--wash-mint)">잘한 순간 ${sg.length}</span>` : ""}${d.bg.length ? `<span class="chip">배경지식 ${d.bg.length}</span>` : ""}${d.tm ? `<span class="chip">간증 구조</span>` : ""}</dd>
+    <dt>키워드</dt><dd>${v.kw.map(k => `<span class="chip">${esc(k)}</span>`).join("")}</dd>
     ${d.bk && d.bk.length ? `<dt>영상 속 책</dt><dd>${d.bk.map(b => `<span class="chip">${esc(b[0])}</span><span class="note">${esc(ROLE[b[2]] || "")}${b[1] ? " · " + esc(b[1]) : ""}</span> `).join("<br>")}</dd>` : ""}
-    <dt>진행자 확인</dt><dd>${v.kjw ? "김재원" : "김재원이 아님"} <span class="note">(${esc(v.conf)}) ${esc(d.host_ev)}</span></dd>${d.issues ? `<dt>자막 메모</dt><dd class="note">${esc(d.issues)}</dd>` : ""}</dl>
+    ${v.vw != null ? `<dt>조회·반응</dt><dd>조회 ${v.vw.toLocaleString()} · 좋아요 ${(v.lk ?? 0).toLocaleString()} (${rate(v.lk, v.vw)}) · 댓글 ${(v.cc ?? 0).toLocaleString()} <span class="note">${esc(v.sa)} 기준${histNote(d.hist)}</span></dd>` : ""}
+    ${v.kjw ? "" : `<dt>진행자</dt><dd>김재원이 아님 <span class="note">${esc(d.host_ev)}</span></dd>`}</dl>
     <p style="margin:12px 0 0"><a class="btn" href="${link(v)}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">영상 보기</a></p></div>
     <div class="tabs2" role="tablist">${tabs.map(([k,l]) => `<button role="tab" aria-selected="${k===tab}" data-t="${k}">${l}</button>`).join("")}</div>
     <div id="tabbody">${body[tab]()}</div></div>`;
@@ -496,7 +508,7 @@ function viewStyle() {
     <div class="card"><h3 class="sub">질문 형태</h3>${bars(S.forms, r => `${FORM[r.k] || r.k}  ·  효과 ${r.eff}`, 0, "coral")}<p class="note" style="margin:12px 0 0">질문 ${nQ.toLocaleString()}건 중 닫힌 질문 ${pct((S.forms.find(f => f.k==="closed")||{n:0}).n, nQ)}, 열린 질문 ${pct((S.forms.find(f => f.k==="open")||{n:0}).n, nQ)}</p></div>
   </div>
   <h2 class="sec">채널별 비교</h2>
-  <div class="card"><table class="t"><tr><th>채널</th><th>편수</th><th>편당 발화</th><th>꼬리질문 비율</th><th>닫힌 질문</th><th>열린 질문</th><th>평균 효과</th></tr>
+  <div class="card tw"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span><table class="t num"><tr><th>채널</th><th>편수</th><th>편당 발화</th><th>꼬리질문 비율</th><th>닫힌 질문</th><th>열린 질문</th><th>평균 효과</th></tr>
   ${S.channels.map(c => `<tr><td>${esc(c.k)}</td><td>${c.vids}</td><td>${(c.n/c.vids).toFixed(1)}</td><td>${pct(c.fu, c.qu)}</td><td>${pct(c.cl, c.qf)}</td><td>${pct(c.op, c.qf)}</td><td>${c.eff}</td></tr>`).join("")}</table>
   <p class="note" style="margin:10px 0 0">하늘빛향기·광야예찬은 공동 진행이 있고 게스트의 긴 독백이 많아 일반 인터뷰와 직접 비교하지 마세요.</p></div>
   <div class="grid g2" style="margin-top:16px">
@@ -561,7 +573,7 @@ async function viewSignal() {
   </div>
   <p class="note" style="margin-top:10px">후보 규칙이 찾지 못한 신호가 있습니다. 무작위 ${m.miss.checked}건 점검에서 ${m.miss.found}건이 더 나와, 후보 밖에 약 ${m.miss.est_total}건(${m.miss.range[0]}~${m.miss.range[1]})이 있을 수 있고 후보 규칙은 전체의 약 ${Math.round(100*m.miss.recall_est)}%를 잡았다고 추정합니다. 총량은 대략으로만 보세요.</p>
   <h2 class="sec">어떤 멘트 뒤에 나왔나</h2>
-  <div class="card" style="overflow-x:auto"><table class="t"><tr><th>멘트 기법</th><th>무작위 기준선(건)</th><th>핵심 신호(건)</th><th>기준선 대비</th><th>추정 성공률</th></tr>
+  <div class="card tw"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span><table class="t num"><tr><th>멘트 기법</th><th>무작위 기준선(건)</th><th>핵심 신호(건)</th><th>기준선 대비</th><th>추정 성공률</th></tr>
   ${m.techniques.map(t => `<tr ${t.thin ? 'style="opacity:.55"' : ""}><td>${esc(t.name)}</td><td>${t.base}</td><td>${t.core}</td><td>${t.lift ?? "-"}배</td><td>${pc(t.rate)}${t.thin ? ' <span class="note">표본 부족</span>' : ""}</td></tr>`).join("")}</table>
   <p class="note" style="margin:10px 0 0">기준선 ${m.base_n}건은 진행자 발화 전체에서 무작위로 고른 표본입니다. 질문은 답변이 돌아오는 구조라 이해받음 표현이 나오기 어려워 성공률이 낮게 나옵니다. 질문의 성과는 '화법 지표'의 꼬리질문으로 보세요. 게스트 표현을 그대로 인용한 멘트는 기준선 ${m.quote.base_yes_pct}%, 신호 장면 ${m.quote.sig_yes_pct}%입니다.</p></div>
   <div class="grid g2" style="margin-top:16px">
@@ -598,7 +610,7 @@ async function viewReport() {
   const cur = R.find(x => x.k === state.rk) || R[0]; state.rk = cur.k;
   app.innerHTML = `<span class="eyebrow">REPORTS</span><h1 class="page-title">리포트</h1>
   <div class="controls">${R.map(x => `<button class="btn ${x.k === cur.k ? "" : "ghost"}" data-k="${x.k}">${esc(x.t)}</button>`).join("")}</div>
-  <div class="card report">${cur.h}</div>`;
+  <div class="card report">${cur.h.replace(/<div style="overflow-x:auto">/g, '<div class="tw">')}</div>`;
   document.querySelectorAll(".controls button[data-k]").forEach(b => b.onclick = () => { state.rk = b.dataset.k; viewReport(); });
 }
 
@@ -624,19 +636,19 @@ async function viewLabel() {
 /* ── 모니터링 */
 function viewMonitor() {
   const M = STATS.mon;
-  const vlist = (idxs, extra) => `<table class="t"><tr><th>영상</th><th>채널</th><th>조회</th><th>좋아요</th><th>비율</th><th>댓글</th>${extra ? `<th>${extra[0]}</th>` : ""}</tr>` + idxs.map(it => { const i = Array.isArray(it) ? it[0] : it, v = V[i]; return `<tr><td><a href="#/video/${v.id}">${esc(v.t.slice(0, 54))}</a><br><span class="note">${esc(v.g.slice(0, 2).join(", "))} · ${dfmt(v.d)}</span></td><td>${esc(v.ch)}</td><td>${num(v.vw)}</td><td>${num(v.lk)}</td><td>${rate(v.lk, v.vw)}</td><td>${num(v.cc)}</td>${extra ? `<td>${extra[1](it)}</td>` : ""}</tr>`; }).join("") + `</table>`;
+  const vlist = (idxs, extra) => `<table class="t num"><tr><th>영상</th><th>채널</th><th>조회</th><th>좋아요</th><th>비율</th><th>댓글</th>${extra ? `<th>${extra[0]}</th>` : ""}</tr>` + idxs.map(it => { const i = Array.isArray(it) ? it[0] : it, v = V[i]; return `<tr><td><a href="#/video/${v.id}">${esc(v.t.slice(0, 54))}</a><br><span class="note">${esc(v.g.slice(0, 2).join(", "))} · ${dfmt(v.d)}</span></td><td>${esc(v.ch)}</td><td>${num(v.vw)}</td><td>${num(v.lk)}</td><td>${rate(v.lk, v.vw)}</td><td>${num(v.cc)}</td>${extra ? `<td>${extra[1](it)}</td>` : ""}</tr>`; }).join("") + `</table>`;
   const diffRows = M.gain.length ? vlist(M.gain, ["기간 증가", g => `조회 +${g[1].toLocaleString()}<br><span class="note">좋아요 ${g[2] >= 0 ? "+" : ""}${g[2].toLocaleString()} (${g[3].slice(5)}~${g[4].slice(5)})</span>`]) : "";
   app.innerHTML = `<span class="eyebrow">MONITORING</span><h1 class="page-title">조회·반응 모니터링</h1>
   <p class="lead">영상별 조회수, 좋아요, 댓글 수와 좋아요가 많은 댓글을 모아 봅니다. 마지막 수집 ${esc(M.stats_at)} · 댓글 ${M.n_comments.toLocaleString()}개(영상당 상위 30개) · 수집한 날 ${M.snap_days.length}일(${esc(M.snap_days.join(", "))}).</p>
   <h2 class="sec" style="margin-top:6px">채널별</h2>
-  <div class="card" style="overflow-x:auto"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span><table class="t"><tr><th>채널</th><th>영상</th><th>조회 합계</th><th>평균</th><th>중앙값</th><th>좋아요 합계</th><th>좋아요 비율</th><th>댓글 합계</th></tr>
+  <div class="card tw"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span><table class="t num"><tr><th>채널</th><th>영상</th><th>조회 합계</th><th>평균</th><th>중앙값</th><th>좋아요 합계</th><th>좋아요 비율</th><th>댓글 합계</th></tr>
   ${M.channels.map(c => `<tr><td>${esc(c.k)}</td><td>${c.n}</td><td>${num(c.views)}</td><td>${num(c.avg)}</td><td>${num(c.med)}</td><td>${num(c.likes)}</td><td>${c.rate}%</td><td>${num(c.cc)}</td></tr>`).join("")}</table>
   <p class="note" style="margin:10px 0 0">조회수는 올라온 지 오래된 영상이 유리합니다. 채널끼리의 평균 비교는 올라온 시기와 구독자 규모가 달라 참고용입니다.</p></div>
   <h2 class="sec">${M.gain.length ? "기간 중 조회가 많이 늘어난 영상" : "변화 추적"}</h2>
-  ${M.gain.length ? `<div class="card" style="overflow-x:auto">${diffRows}</div>` : `<div class="card"><p style="margin:0">지금은 ${esc(M.snap_days.join(", "))} 하루치만 있어 증가분을 계산할 수 없습니다. 수집을 다른 날 한 번 더 하면(<code>07_collect_stats.py</code>) 이 자리에 기간 중 증가 상위 영상이 표시됩니다.</p></div>`}
-  <h2 class="sec">조회수 상위 30</h2><div class="card" style="overflow-x:auto">${vlist(M.top_views)}</div>
-  <h2 class="sec">좋아요 비율 상위 30 <span class="note">(조회 5천 이상)</span></h2><div class="card" style="overflow-x:auto">${vlist(M.top_rate)}</div>
-  <h2 class="sec">댓글이 많은 영상 30</h2><div class="card" style="overflow-x:auto">${vlist(M.top_cc)}</div>
+  ${M.gain.length ? `<div class="card tw"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span>${diffRows}</div>` : `<div class="card"><p style="margin:0">지금은 ${esc(M.snap_days.join(", "))} 하루치만 있어 증가분을 계산할 수 없습니다. 수집을 다른 날 한 번 더 하면(<code>07_collect_stats.py</code>) 이 자리에 기간 중 증가 상위 영상이 표시됩니다.</p></div>`}
+  <h2 class="sec">조회수 상위 30</h2><div class="card tw"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span>${vlist(M.top_views)}</div>
+  <h2 class="sec">좋아요 비율 상위 30 <span class="note">(조회 5천 이상)</span></h2><div class="card tw"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span>${vlist(M.top_rate)}</div>
+  <h2 class="sec">댓글이 많은 영상 30</h2><div class="card tw"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span>${vlist(M.top_cc)}</div>
   <h2 class="sec">주요 댓글</h2>
   <p class="note">영상마다 앞쪽 댓글 30개 가운데서 모은 것이라 전체 댓글 순위는 아닙니다. 작성자 이름은 표시하지 않습니다.</p>
   <div class="controls"><select id="mmode" aria-label="정렬"><option value="l" ${state.mmode!=="r"?"selected":""}>좋아요 많은 순 (상위 ${M.comments.length})</option><option value="r" ${state.mmode==="r"?"selected":""}>답글 많은 순 (상위 ${M.comments_r.length})</option></select><input type="search" id="mq" placeholder="댓글 안에서 찾기" value="${esc(state.mq)}" aria-label="댓글 검색"></div><div id="ml"></div>`;
