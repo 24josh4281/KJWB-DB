@@ -578,7 +578,7 @@ async function viewSignal() {
   const m = SG.sum, G = m.gold, pc = x => x == null ? "-" : x + "%";
   const mainCh = m.channels.filter(c => !c.co_host);
   app.innerHTML = `<span class="eyebrow">UNDERSTOOD SIGNALS</span><h1 class="page-title">게스트가 이해받았다고 말한 순간</h1>
-  <p class="lead">진행자 멘트 뒤에 게스트가 "정확합니다", "제 마음을 알아주시네요"처럼 이해받은 반응을 말로 드러낸 장면입니다. 자막에 말로 나온 것만 세고, 판정은 AI가 했습니다. ${G.n ? `사용자 라벨 ${G.n}건과 비교한 일치율은 ${Math.round(G.rate*100)}%입니다.` : `<b>아직 사람이 확인하지 않은 값(정확도 검증 전)</b>이라 개별 장면은 영상에서 직접 확인하세요.`}</p>
+  <p class="lead">진행자 멘트 뒤에 게스트가 "정확합니다", "제 마음을 알아주시네요"처럼 이해받은 반응을 말로 드러낸 장면입니다. 자막에 말로 나온 것만 세고, 판정은 AI가 했습니다. ${G.n ? `사용자 라벨 ${G.n}건과 비교한 일치율은 ${Math.round(G.rate*100)}%입니다.` : `<b>아직 사람이 확인하지 않은 값(정확도 검증 전)</b>이라 개별 장면은 영상에서 직접 확인하세요.`}${m.cross && m.cross.n ? ` 같은 ${m.cross.n}건을 다른 문구의 지침으로 다시 분류했을 때 ${Math.round(m.cross.rate*100)}%가 같은 판정이었습니다(판정의 흔들림 척도이며 정답 일치율은 아닙니다).` : ""}</p>
   <div class="grid g4">
     <div class="card stat wash-mint"><div class="num">${m.core}<small>건</small></div><div class="lab">핵심 신호 (진행자의 말에 대한 반응)</div></div>
     <div class="card stat"><div class="num">${(100*m.core/m.exchanges).toFixed(2)}</div><div class="lab">발화 100건당 핵심 신호</div></div>
