@@ -126,6 +126,9 @@
   .detail h1 { font-size:26px; line-height:1.4; }
   .kv { display:grid; grid-template-columns:130px 1fr; gap:6px 14px; font-size:14px; }
   .kv dt { color:var(--muted); } .kv dd { margin:0; }
+  .kv dd.sum { font-size:15px; line-height:1.75; }
+  .sumlist { margin:0; padding-left:18px; } .sumlist li { margin:0 0 6px; }
+  @media (max-width:600px){ .detail h1 { font-size:21px; } .kv { font-size:14.5px; } }
   @media (max-width:600px){ .kv{grid-template-columns:1fr;} .kv dt{margin-top:6px;} }
   ul.clean { margin:0; padding-left:18px; } ul.clean li { margin:4px 0; }
   .tabs2 { display:flex; gap:6px; flex-wrap:wrap; margin:22px 0 12px; border-bottom:1px solid var(--line); }
@@ -147,6 +150,15 @@
   table.t { width:100%; border-collapse:collapse; font-size:13.5px; }
   table.t th, table.t td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
   table.t th { color:var(--muted); font-weight:500; font-size:12.5px; }
+  table.t td:not(:first-child), table.t th:not(:first-child) { white-space:nowrap; }
+  table.t td:not(:first-child) { font-variant-numeric:tabular-nums; }
+  @media (max-width:760px){
+    .card > table.t, .card > div > table.t { font-size:13px; }
+    table.t th, table.t td { padding:7px 8px; }
+    table.t td:first-child { min-width:170px; }
+    .scrollhint { display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
+  }
+  .scrollhint { display:none; }
   .empty { color:var(--muted); padding:30px; text-align:center; }
   footer { border-top:1px solid var(--line); padding:20px 0 40px; color:var(--muted); font-size:12.5px; }
   .ripple { position:absolute; right:-40px; top:-30px; width:260px; opacity:.55; pointer-events:none; }
@@ -230,15 +242,18 @@ $("#tabs").innerHTML = TABS.map(([k,l]) => `<button role="tab" data-k="${k}">${l
 $("#tabs").onclick = e => { const b = e.target.closest("button"); if (b) location.hash = "#/" + (b.dataset.k === "home" ? "" : b.dataset.k); };
 
 /* ── 라우팅 */
+let lastRoute = "";
 let state = { mmode:"l", vsort:"d", bq:"", bpage:0, mq:"", vq:"", vch:"", vdom:"", vhost:"1", vpage:0, gq:"", sq:"", stype:"", sreact:"", sch:"", spage:0, tq:"", tpage:0, sgl:"2", sgt:"", sga:"words", sgk:"", sgc:"", sgu:"1", sgq:"", sgp:0, rk:"" };
 async function route() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
   const k = parts[0] || "home";
+  const sameVideo = k === "video" && lastRoute === "video/" + parts[1];
+  lastRoute = k === "video" ? "video/" + parts[1] : k;
   for (const b of document.querySelectorAll("#tabs button")) { const on = b.dataset.k === (k === "video" ? "videos" : k === "guest" ? "guests" : k); b.setAttribute("aria-selected", String(on)); if (on && b.scrollIntoView) b.scrollIntoView({ block: "nearest", inline: "center" }); }
-  window.scrollTo(0, 0);
+  if (!sameVideo) window.scrollTo(0, 0);
   if (k === "home") return viewHome();
   if (k === "videos") return viewVideos();
-  if (k === "video") return viewVideo(parts[1], parts[2] || "ex");
+  if (k === "video") return viewVideo(parts[1], parts[2] || "ex", sameVideo);
   if (k === "guests") return viewGuests();
   if (k === "guest") return viewGuest(parts[1]);
   if (k === "search") return viewSearch();
@@ -333,10 +348,11 @@ function viewVideos() {
 }
 
 /* ── 영상 상세 */
-async function viewVideo(id, tab) {
+async function viewVideo(id, tab, keepPos) {
   const v = V.find(x => x.id === id);
   if (!v) { app.innerHTML = `<div class="empty">영상을 찾을 수 없습니다.</div>`; return; }
-  app.innerHTML = `<div class="empty">불러오는 중…</div>`;
+  const keepY = keepPos ? window.scrollY : null;
+  if (!keepPos) app.innerHTML = `<div class="empty">불러오는 중…</div>`;
   let d; try { d = await loadVideo(id); } catch (e) { app.innerHTML = `<div class="empty">상세 데이터를 불러오지 못했습니다. dashboard 폴더 전체를 그대로 열어야 합니다.</div>`; return; }
   let sg = []; try { const SG = await loadSig(); const vi = V.findIndex(x => x.id === id); sg = SG.rows.filter(r => r[0] === vi); } catch (e) {}
   const tabs = [["ex","발화와 반응"],["hl","주요 장면"],["pts","게스트 이야기"],["bg","배경지식"],["st","화법"],["cm",`댓글${v.cc ? " " + num(v.cc) : ""}`]];
@@ -373,7 +389,7 @@ async function viewVideo(id, tab) {
   app.innerHTML = `<div class="detail"><button class="back" onclick="history.back()">← 돌아가기</button>
     <span class="chip ${chClass(v.ch)}">${esc(v.ch)}</span> <span class="note">${dfmt(v.d)} · ${dur(v.dur)}${v.part ? " · " + esc(v.part) : ""}</span>
     <h1>${esc(v.t)}</h1>
-    <div class="card" style="margin-top:14px"><dl class="kv"><dt>게스트</dt><dd>${guests || "—"}</dd><dt>주제</dt><dd>${esc(v.top)}${v.dom ? ` <span class="chip">${esc(v.dom)}</span>` : ""}</dd><dt>요약</dt><dd>${esc(v.sum)}</dd><dt>키워드</dt><dd>${v.kw.map(k => `<span class="chip">${esc(k)}</span>`).join("")}</dd>
+    <div class="card" style="margin-top:14px"><dl class="kv"><dt>게스트</dt><dd>${guests || "—"}</dd><dt>주제</dt><dd>${esc(v.top)}${v.dom ? ` <span class="chip">${esc(v.dom)}</span>` : ""}</dd><dt>요약</dt><dd class="sum">${sentences(v.sum)}</dd><dt>키워드</dt><dd>${v.kw.map(k => `<span class="chip">${esc(k)}</span>`).join("")}</dd>
     ${v.vw != null ? `<dt>조회·반응</dt><dd>조회 ${v.vw.toLocaleString()} · 좋아요 ${(v.lk ?? 0).toLocaleString()} (${rate(v.lk, v.vw)}) · 댓글 ${(v.cc ?? 0).toLocaleString()} <span class="note">${esc(v.sa)} 기준${histNote(d.hist)}</span></dd>` : ""}
     ${d.bk && d.bk.length ? `<dt>영상 속 책</dt><dd>${d.bk.map(b => `<span class="chip">${esc(b[0])}</span><span class="note">${esc(ROLE[b[2]] || "")}${b[1] ? " · " + esc(b[1]) : ""}</span> `).join("<br>")}</dd>` : ""}
     <dt>진행자 확인</dt><dd>${v.kjw ? "김재원" : "김재원이 아님"} <span class="note">(${esc(v.conf)}) ${esc(d.host_ev)}</span></dd>${d.issues ? `<dt>자막 메모</dt><dd class="note">${esc(d.issues)}</dd>` : ""}</dl>
@@ -381,6 +397,7 @@ async function viewVideo(id, tab) {
     <div class="tabs2" role="tablist">${tabs.map(([k,l]) => `<button role="tab" aria-selected="${k===tab}" data-t="${k}">${l}</button>`).join("")}</div>
     <div id="tabbody">${body[tab]()}</div></div>`;
   document.querySelectorAll(".tabs2 button").forEach(b => b.onclick = () => location.hash = `#/video/${id}/${b.dataset.t}`);
+  if (keepY != null) { const t = $(".tabs2"); const top = t.getBoundingClientRect().top + window.scrollY - 52; window.scrollTo(0, Math.min(keepY, top)); }
   if (tab === "ex" && exs.length) {
     const draw = () => {
       const ts = terms($("#eq").value), ty = $("#et").value, re = $("#er").value;
@@ -391,6 +408,7 @@ async function viewVideo(id, tab) {
     ["eq","et","er"].forEach(i => $("#"+i).addEventListener(i === "eq" ? "input" : "change", draw)); draw();
   }
 }
+const sentences = t => { const parts = String(t || "").split(/(?<=[다요음임]\.)\s+/).filter(Boolean); return parts.length > 1 ? `<ul class="sumlist">${parts.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : esc(t); };
 function histNote(h) {
   const days = [...new Set((h || []).map(x => x[0].slice(0,10)))];
   if (days.length < 2) return " · 변화는 다음 갱신부터 표시";
@@ -611,7 +629,7 @@ function viewMonitor() {
   app.innerHTML = `<span class="eyebrow">MONITORING</span><h1 class="page-title">조회·반응 모니터링</h1>
   <p class="lead">영상별 조회수, 좋아요, 댓글 수와 좋아요가 많은 댓글을 모아 봅니다. 마지막 수집 ${esc(M.stats_at)} · 댓글 ${M.n_comments.toLocaleString()}개(영상당 상위 30개) · 수집한 날 ${M.snap_days.length}일(${esc(M.snap_days.join(", "))}).</p>
   <h2 class="sec" style="margin-top:6px">채널별</h2>
-  <div class="card" style="overflow-x:auto"><table class="t"><tr><th>채널</th><th>영상</th><th>조회 합계</th><th>평균</th><th>중앙값</th><th>좋아요 합계</th><th>좋아요 비율</th><th>댓글 합계</th></tr>
+  <div class="card" style="overflow-x:auto"><span class="scrollhint">표가 넓으면 옆으로 밀어 보세요</span><table class="t"><tr><th>채널</th><th>영상</th><th>조회 합계</th><th>평균</th><th>중앙값</th><th>좋아요 합계</th><th>좋아요 비율</th><th>댓글 합계</th></tr>
   ${M.channels.map(c => `<tr><td>${esc(c.k)}</td><td>${c.n}</td><td>${num(c.views)}</td><td>${num(c.avg)}</td><td>${num(c.med)}</td><td>${num(c.likes)}</td><td>${c.rate}%</td><td>${num(c.cc)}</td></tr>`).join("")}</table>
   <p class="note" style="margin:10px 0 0">조회수는 올라온 지 오래된 영상이 유리합니다. 채널끼리의 평균 비교는 올라온 시기와 구독자 규모가 달라 참고용입니다.</p></div>
   <h2 class="sec">${M.gain.length ? "기간 중 조회가 많이 늘어난 영상" : "변화 추적"}</h2>
