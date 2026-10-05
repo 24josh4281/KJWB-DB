@@ -62,6 +62,15 @@
   nav.tabs button { background:none; border:0; border-bottom:2px solid transparent; padding:8px 12px; cursor:pointer; color:var(--muted); font-weight:500; }
   nav.tabs button[aria-selected="true"] { color:var(--brand); border-bottom-color:var(--coral); }
   .theme-btn { border:1px solid var(--line-strong); background:var(--raised); border-radius:4px; padding:6px 10px; cursor:pointer; font-size:13px; color:var(--muted); }
+  /* 좁은 화면: 메뉴를 한 줄로 두고 옆으로 밀어 보게 한다. 여러 줄로 쌓여 본문을 가리지 않도록 */
+  @media (max-width:760px){
+    .top .row { gap:8px 12px; padding:8px 0 0; }
+    .brand img { height:26px; } .brand .sub { font-size:15px; padding-left:10px; }
+    .theme-btn { margin-left:auto; padding:4px 8px; font-size:12px; }
+    nav.tabs { order:3; flex:0 0 100%; flex-wrap:nowrap; overflow-x:auto; margin-left:0; gap:0; -webkit-overflow-scrolling:touch; scrollbar-width:none; scroll-snap-type:x proximity; }
+    nav.tabs::-webkit-scrollbar { display:none; }
+    nav.tabs button { flex:0 0 auto; white-space:nowrap; padding:9px 11px; font-size:14px; scroll-snap-align:start; }
+  }
 
   main { padding:28px 0 80px; min-height:70vh; }
   .eyebrow { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:500; letter-spacing:.08em; color:var(--link); }
@@ -225,7 +234,7 @@ let state = { mmode:"l", vsort:"d", bq:"", bpage:0, mq:"", vq:"", vch:"", vdom:"
 async function route() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
   const k = parts[0] || "home";
-  for (const b of document.querySelectorAll("#tabs button")) b.setAttribute("aria-selected", String(b.dataset.k === (k === "video" ? "videos" : k === "guest" ? "guests" : k)));
+  for (const b of document.querySelectorAll("#tabs button")) { const on = b.dataset.k === (k === "video" ? "videos" : k === "guest" ? "guests" : k); b.setAttribute("aria-selected", String(on)); if (on && b.scrollIntoView) b.scrollIntoView({ block: "nearest", inline: "center" }); }
   window.scrollTo(0, 0);
   if (k === "home") return viewHome();
   if (k === "videos") return viewVideos();
